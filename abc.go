@@ -1,6 +1,7 @@
 package abc
 
 import (
+	"os"
 	"sync"
 )
 
@@ -25,7 +26,9 @@ func SetRoot(lg Logger) {
 
 func NewSimpleLogger() Logger {
 	return &SimpleLogger{
-		lvl: LevelInfo,
+		lvl:   LevelInfo,
+		clock: &realClock{},
+		out:   os.Stdout,
 	}
 }
 
@@ -33,13 +36,13 @@ func NewSimpleLogger() Logger {
 
 func Print(lvl LogLevel, v ...interface{}) {
 	if root.IsLevelEnabled(lvl) {
-		root.Print(lvl, v)
+		root.Print(lvl, v...)
 	}
 }
 
 func Printf(lvl LogLevel, format string, v ...interface{}) {
 	if root.IsLevelEnabled(lvl) {
-		root.Printf(lvl, format, v)
+		root.Printf(lvl, format, v...)
 	}
 }
 
