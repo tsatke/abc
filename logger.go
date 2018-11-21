@@ -1,5 +1,7 @@
 package abc
 
+import "io"
+
 type LogLevel uint8
 
 const (
@@ -50,6 +52,9 @@ type Logger interface {
 
 	Fatal(...interface{})
 	Fatalf(string, ...interface{})
+
+	Out() io.Writer
+	SetOut(io.Writer)
 
 	SetLevel(LogLevel)
 	IsLevelEnabled(LogLevel) bool
