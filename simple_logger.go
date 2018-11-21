@@ -7,6 +7,8 @@ import (
 )
 
 const (
+	// TimeLayoutSimpleLogger is the time layout that the simple logger
+	// uses for its messages.
 	TimeLayoutSimpleLogger = "2006-01-02 15:04:05.000"
 )
 

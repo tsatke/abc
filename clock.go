@@ -2,6 +2,8 @@ package abc
 
 import "time"
 
+// Clock is an interface created to be able to
+// mock time.Now() easily.
 type Clock interface {
 	Now() time.Time
 	After(d time.Duration) <-chan time.Time
