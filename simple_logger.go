@@ -20,13 +20,13 @@ type SimpleLogger struct {
 
 func (s *SimpleLogger) Print(lvl LogLevel, v ...interface{}) {
 	if s.IsLevelEnabled(lvl) {
-		s.print0(fmt.Sprint(v...))
+		s.print0(s.prepareMessage(lvl, fmt.Sprint(v...)))
 	}
 }
 
 func (s *SimpleLogger) Printf(lvl LogLevel, format string, v ...interface{}) {
 	if s.IsLevelEnabled(lvl) {
-		s.print0(fmt.Sprintf(format, v...))
+		s.print0(s.prepareMessage(lvl, fmt.Sprintf(format, v...)))
 	}
 }
 
