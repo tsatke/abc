@@ -23,7 +23,7 @@ func (l LogLevel) String() string {
 	case LevelError:
 		return "ERR"
 	case LevelFatal:
-		return "FATL"
+		return "FATAL"
 	}
 	return ""
 }
