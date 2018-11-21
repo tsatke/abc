@@ -24,7 +24,7 @@ func SetRoot(lg Logger) {
 	root = lg
 }
 
-func NewSimpleLogger() Logger {
+func NewSimpleLogger() WriterLogger {
 	return &SimpleLogger{
 		lvl:   LevelInfo,
 		clock: &realClock{},
