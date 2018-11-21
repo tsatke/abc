@@ -16,4 +16,7 @@ func main() {
 	logger.SetLevel(abc.LevelWarn)
 
 	logger.Error("Still printing...")
+
+	abc.SetRoot(logger)
+	abc.Info("Now you can use me globally")
 }
