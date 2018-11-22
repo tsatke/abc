@@ -45,6 +45,15 @@ func NewSimpleLogger() WriterLogger {
 	}
 }
 
+func NewNamedLogger(name string) WriterLogger {
+	return &NamedLogger{
+		lvl:   LevelInfo,
+		clock: &realClock{},
+		out:   os.Stdout,
+		name:  name,
+	}
+}
+
 // "Implementing" abc.Logger
 
 // Print delegates to the root logger, if and only if
