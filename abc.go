@@ -45,6 +45,16 @@ func NewSimpleLogger() WriterLogger {
 	}
 }
 
+// NewNamedLogger returns a new abc.NamedLogger,
+// which is ready to use.
+// The default log level is INFO and can be changed with
+//
+//	logger.SetLevel(abc.LevelInfo)
+//
+// The logger prints to os.Stdout by default.
+// The output writer can be changed with
+//
+//	logger.SetOut(os.Stdout)
 func NewNamedLogger(name string) WriterLogger {
 	return &NamedLogger{
 		lvl:   LevelInfo,
@@ -64,7 +74,7 @@ func Print(lvl LogLevel, v ...interface{}) {
 	}
 }
 
-// Print delegates to the root logger, if and only if
+// Printf delegates to the root logger, if and only if
 // the given level is enabled by the root logger.
 func Printf(lvl LogLevel, format string, v ...interface{}) {
 	if root.IsLevelEnabled(lvl) {
