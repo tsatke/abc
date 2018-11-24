@@ -10,7 +10,7 @@ RUN apk add --no-cache git make musl-dev curl && \
     mv go /
 
 # Configure Go
-ENV GOROOT /usr/lib/go
+ENV GOROOT /go
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
 

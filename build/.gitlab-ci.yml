@@ -11,6 +11,10 @@ before_script:
   - dockerd > /dev/null 2>&1 &
   - cd ${CI_PROJECT_DIR}
   - go version
+  - ls -la /
+  - ls -la /go
+  - echo $PATH
+  - ls -la /go/bin
 
 test:
   stage: test
