@@ -14,6 +14,7 @@ before_script:
   - ls -la /go
   - echo $PATH
   - ls -la /go/bin
+  - export PATH=$PATH:/go/bin
   - go version
 
 test:

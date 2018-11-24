@@ -11,7 +11,7 @@ RUN apk add --no-cache git make musl-dev curl && \
 
 # Configure Go
 ENV GOROOT /go
-ENV GOPATH /usr/src
+ENV GOPATH $HOME/go
 ENV PATH ${GOROOT}/bin:${GOPATH}/bin:$PATH
 
 ##############
