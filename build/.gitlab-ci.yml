@@ -1,0 +1,24 @@
+image: registry.gitlab.com/TimSatke/abc/qa/golang-dind:latest
+
+variables:
+  ARTIFACTS_DIR: abc
+  GO_PROJECT: gitlab.com/TimSatke/abc
+
+stages:
+  - test
+
+before_script:
+  - dockerd > /dev/null 2>&1 &
+  - cd ${CI_PROJECT_DIR}
+
+test:
+  stage: test
+  retry: 2
+  script:
+    - go test -v ./...
+
+benchmarks:
+  stage: test
+  retry: 2
+  script:
+    - go test -benchmem -bench .
