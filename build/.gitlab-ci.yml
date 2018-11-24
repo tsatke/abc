@@ -10,11 +10,10 @@ stages:
 before_script:
   - dockerd > /dev/null 2>&1 &
   - cd ${CI_PROJECT_DIR}
-  - ls -la /
-  - ls -la /go
+  - ls -la /usr/local
+  - ls -la /usr/local/go
   - echo $PATH
-  - ls -la /go/bin
-  - export PATH=$PATH:/go/bin
+  - ls -la /usr/local/go/bin
   - go version
 
 test:
