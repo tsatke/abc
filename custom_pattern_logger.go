@@ -4,14 +4,19 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"path/filepath"
+	"runtime"
+	"strings"
 	"sync"
+	"sync/atomic"
 	"text/template"
 )
 
 const (
 	// TimeLayoutCustomPatternLogger is the time layout that the simple logger
 	// uses for its messages if no formatting pattern is given.
-	TimeLayoutCustomPatternLogger = "2006-01-02 15:04:05.000"
+	TimeLayoutCustomPatternLogger     = "2006-01-02 15:04:05.000"
+	CustomPatternLoggerDefaultPattern = "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n"
 )
 
 type CustomPatternLogger struct {
@@ -33,41 +38,54 @@ type CustomPatternLogger struct {
 // if and only if the given log level is higher than or
 // equal to the one of this logger.
 func (l *CustomPatternLogger) Print(lvl LogLevel, v ...interface{}) {
-	if l.IsLevelEnabled(lvl) {
-		l.print0(l.prepareMessage(lvl, fmt.Sprint(v...)))
-	}
+	l.print0(lvl, v...)
 }
 
 // Printf formats and prints the given values with the given log level,
 // if and only if the given log level is higher than or
 // equal to the one of this logger.
 func (l *CustomPatternLogger) Printf(lvl LogLevel, format string, v ...interface{}) {
+	l.printf0(lvl, format, v...)
+}
+
+func (l *CustomPatternLogger) print0(lvl LogLevel, v ...interface{}) {
 	if l.IsLevelEnabled(lvl) {
-		l.print0(l.prepareMessage(lvl, fmt.Sprintf(format, v...)))
+		l.print1(l.prepareMessage(lvl, fmt.Sprint(v...)))
+	}
+}
+func (l *CustomPatternLogger) printf0(lvl LogLevel, format string, v ...interface{}) {
+	if l.IsLevelEnabled(lvl) {
+		l.print1(l.prepareMessage(lvl, fmt.Sprintf(format, v...)))
 	}
 }
 
 func (l *CustomPatternLogger) prepareMessage(lvl LogLevel, a string) string {
 	if l.template == nil {
-		err := l.Init()
+		err := l.init()
 		if err != nil {
-			return fmt.Sprintf("Failed to initialize logger (to handle this error, call Init() yourself): %v", err)
+			println(fmt.Sprintf("Failed to initialize logger, using default pattern: %v", err))
+			l.pattern = CustomPatternLoggerDefaultPattern
+			_ = l.init()
 		}
 	}
 
 	buf := &bytes.Buffer{}
 	err := l.template.Execute(buf, &CustomPatternLoggerTemplateData{
 		clock:   l.clock,
-		Level:   lvl.String(),
+		Level:   fmt.Sprintf("%-4v", lvl.String()),
 		Message: a,
 	})
 	if err != nil {
-		return fmt.Sprintf("Failed to execute template: %v", err)
+		println(fmt.Sprintf("Failed to execute template, using default pattern: %v", err))
+		l.pattern = CustomPatternLoggerDefaultPattern
+		l.template = nil
+		return l.prepareMessage(lvl, a) // recursive call, with default pattern, which will be compiled in recursive call
 	}
 	return buf.String() // TODO(TimSatke) implement message formatting
 }
 
-func (l *CustomPatternLogger) Init() error {
+func (l *CustomPatternLogger) init() error {
+	// TODO(TimSatke) make safe for concurrent use
 	tmpl, err := template.New(l.pattern).Parse(l.pattern)
 	if err != nil {
 		return err
@@ -77,7 +95,7 @@ func (l *CustomPatternLogger) Init() error {
 	return nil
 }
 
-func (l *CustomPatternLogger) print0(a string) {
+func (l *CustomPatternLogger) print1(a string) {
 	io.WriteString(l.out, a)
 }
 
@@ -91,65 +109,65 @@ func (l *CustomPatternLogger) Inspect(v interface{}) {
 // Verbose prints the given values with log level DEBG,
 // if and only if this logger has the verbose log level enabled.
 func (l *CustomPatternLogger) Verbose(v ...interface{}) {
-	l.Print(LevelVerbose, v...)
+	l.print0(LevelVerbose, v...)
 }
 
 // Verbosef formats and prints the given values with log level DEBG,
 // if and only if this logger has the verbose log level enabled.
 func (l *CustomPatternLogger) Verbosef(format string, v ...interface{}) {
-	l.Printf(LevelVerbose, format, v...)
+	l.printf0(LevelVerbose, format, v...)
 }
 
 // Debug prints the given values with log level DEBG.
 func (l *CustomPatternLogger) Debug(v ...interface{}) {
-	l.Print(LevelDebug, v...)
+	l.print0(LevelDebug, v...)
 }
 
 // Debugf formats and prints the given values with log level DEBG.
 func (l *CustomPatternLogger) Debugf(format string, v ...interface{}) {
-	l.Printf(LevelDebug, format, v...)
+	l.printf0(LevelDebug, format, v...)
 }
 
 // Info prints the given values with log level INFO.
 func (l *CustomPatternLogger) Info(v ...interface{}) {
-	l.Print(LevelInfo, v...)
+	l.print0(LevelInfo, v...)
 }
 
 // Infof formats and prints the given values with log level INFO.
 func (l *CustomPatternLogger) Infof(format string, v ...interface{}) {
-	l.Printf(LevelInfo, format, v...)
+	l.printf0(LevelInfo, format, v...)
 }
 
 // Warn prints the given values with log level WARN.
 func (l *CustomPatternLogger) Warn(v ...interface{}) {
-	l.Print(LevelWarn, v...)
+	l.print0(LevelWarn, v...)
 }
 
 // Warnf formats and prints the given values with log level WARN.
 func (l *CustomPatternLogger) Warnf(format string, v ...interface{}) {
-	l.Printf(LevelWarn, format, v...)
+	l.printf0(LevelWarn, format, v...)
 }
 
 // Error prints the given values with log level ERR.
 func (l *CustomPatternLogger) Error(v ...interface{}) {
-	l.Print(LevelError, v...)
+	l.print0(LevelError, v...)
 }
 
 // Errorf formats and prints the given values with log level ERR.
 func (l *CustomPatternLogger) Errorf(format string, v ...interface{}) {
-	l.Printf(LevelError, format, v...)
+	l.printf0(LevelError, format, v...)
 }
 
 // Fatal prints the given values with log level FATAL.
 // IT DOES NOT TERMINATE THE APPLICATION.
 func (l *CustomPatternLogger) Fatal(v ...interface{}) {
-	l.Print(LevelFatal, v...)
+	l.print0(LevelFatal, v...)
 }
 
 // Fatalf formats and prints the given values with log level FATAL.
 // IT DOES NOT TERMINATE THE APPLICATION.
 func (l *CustomPatternLogger) Fatalf(format string, v ...interface{}) {
-	l.Printf(LevelFatal, format, v...)
+	l.printf0(LevelFatal, format, v...)
 }
 
 // Level returns the current level of this logger.
@@ -198,10 +216,16 @@ func (l *CustomPatternLogger) SetOut(out io.Writer) {
 // =======================================================
 
 type CustomPatternLoggerTemplateData struct {
-	RuntimeInformation
 	clock   Clock
 	Level   string
 	Message string
+
+	initialized uint32
+	callerMux   sync.Mutex
+	pc          uintptr
+	file        string
+	line        int
+	function    *runtime.Func
 }
 
 func (l *CustomPatternLoggerTemplateData) Timestamp() string {
@@ -210,4 +234,58 @@ func (l *CustomPatternLoggerTemplateData) Timestamp() string {
 
 func (l *CustomPatternLoggerTemplateData) Timestampf(layout string) string {
 	return l.clock.Now().Format(layout) // the formatted timestamp
+}
+
+func (l *CustomPatternLoggerTemplateData) File() string {
+	l.initCallerInfo()
+	return l.Filef("short")
+}
+
+func (l *CustomPatternLoggerTemplateData) Filef(mode string) string {
+	l.initCallerInfo()
+	if mode == "short" {
+		name := l.file
+		return filepath.Base(name)
+	} else {
+		return l.file // calling file
+	}
+}
+
+func (l *CustomPatternLoggerTemplateData) Line() int {
+	l.initCallerInfo()
+	return l.line // calling line number
+}
+
+func (l *CustomPatternLoggerTemplateData) Function() string {
+	l.initCallerInfo()
+	return l.Functionf("full")
+}
+
+func (l *CustomPatternLoggerTemplateData) Functionf(mode string) string {
+	l.initCallerInfo()
+	if mode == "short" {
+		name := l.function.Name()
+		return name[strings.LastIndex(name, ".")+1:]
+	} else {
+		return l.function.Name() // calling package
+	}
+}
+
+func (l *CustomPatternLoggerTemplateData) initCallerInfo() {
+	if atomic.LoadUint32(&l.initialized) == 1 {
+		return
+	}
+
+	l.callerMux.Lock()
+	defer l.callerMux.Unlock()
+
+	if l.initialized == 0 {
+		var ok bool
+		l.pc, l.file, l.line, ok = runtime.Caller(18)
+		l.function = runtime.FuncForPC(l.pc)
+
+		if ok {
+			atomic.AddUint32(&l.initialized, 1)
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package abc
 
 import (
+	"fmt"
 	"os"
 	"sync"
 )
@@ -62,6 +63,25 @@ func NewNamedLogger(name string) WriterLogger {
 		out:   os.Stdout,
 		name:  name,
 	}
+}
+
+func NewCustomPatternLogger(pattern string) (WriterLogger, error) {
+	logger := &CustomPatternLogger{
+		lvl:     LevelInfo,
+		clock:   &realClock{},
+		out:     os.Stdout,
+		pattern: pattern,
+	}
+	err := logger.init()
+	return logger, err
+}
+
+func Must(logger Logger, err error) Logger {
+	if err != nil {
+		panic(fmt.Errorf("must: %v", err))
+	}
+
+	return logger
 }
 
 // "Implementing" abc.Logger
