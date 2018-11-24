@@ -1,4 +1,4 @@
-image: registry.gitlab.com/timsatke/abc/qa/golang-dind:latest
+image: golang:latest
 
 variables:
   ARTIFACTS_DIR: abc
@@ -10,11 +10,6 @@ stages:
 before_script:
   - dockerd > /dev/null 2>&1 &
   - cd ${CI_PROJECT_DIR}
-  - ls -la /usr/local
-  - ls -la /usr/local/go
-  - ls -la /usr/local/go/bin
-  - echo $PATH
-  - hash -r
   - go version
 
 test:
@@ -25,7 +20,6 @@ test:
 
 benchmarks:
   stage: test
-  retry: 2
   allow_failure: true
   script:
     - go test -benchmem -bench .
