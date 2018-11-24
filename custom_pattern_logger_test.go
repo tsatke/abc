@@ -241,5 +241,3 @@ func TestCustomPatternLogger_All_Outputs(t *testing.T) {
 	logger.Fatalf("fmt: %v", "abc")
 	check()
 }
-
-// TODO(TimSatke) add tests that ensure that messages are formatted correctly according to the given pattern

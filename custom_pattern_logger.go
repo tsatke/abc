@@ -258,7 +258,7 @@ func (l *CustomPatternLoggerTemplateData) Line() int {
 
 func (l *CustomPatternLoggerTemplateData) Function() string {
 	l.initCallerInfo()
-	return l.Functionf("full")
+	return l.Functionf("package")
 }
 
 func (l *CustomPatternLoggerTemplateData) Functionf(mode string) string {
@@ -266,6 +266,8 @@ func (l *CustomPatternLoggerTemplateData) Functionf(mode string) string {
 	if mode == "short" {
 		name := l.function.Name()
 		return name[strings.LastIndex(name, ".")+1:]
+	} else if mode == "package" {
+		return filepath.Base(l.function.Name())
 	} else {
 		return l.function.Name() // calling package
 	}
