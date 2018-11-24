@@ -12,8 +12,9 @@ before_script:
   - cd ${CI_PROJECT_DIR}
   - ls -la /usr/local
   - ls -la /usr/local/go
-  - echo $PATH
   - ls -la /usr/local/go/bin
+  - echo $PATH
+  - hash -r
   - go version
 
 test:
