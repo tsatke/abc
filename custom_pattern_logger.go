@@ -1,9 +1,11 @@
 package abc
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"sync"
+	"text/template"
 )
 
 const (
@@ -22,7 +24,9 @@ type CustomPatternLogger struct {
 	outMux sync.Mutex
 	out    io.Writer
 
-	pattern string
+	pattern  string
+	lock     sync.Mutex
+	template *template.Template
 }
 
 // Print prints the given values with the given log level,
@@ -44,7 +48,33 @@ func (l *CustomPatternLogger) Printf(lvl LogLevel, format string, v ...interface
 }
 
 func (l *CustomPatternLogger) prepareMessage(lvl LogLevel, a string) string {
-	return "" // TODO(TimSatke) implement message formatting
+	if l.template == nil {
+		err := l.Init()
+		if err != nil {
+			return fmt.Sprintf("Failed to initialize logger (to handle this error, call Init() yourself): %v", err)
+		}
+	}
+
+	buf := &bytes.Buffer{}
+	err := l.template.Execute(buf, &CustomPatternLoggerTemplateData{
+		clock:   l.clock,
+		Level:   lvl.String(),
+		Message: a,
+	})
+	if err != nil {
+		return fmt.Sprintf("Failed to execute template: %v", err)
+	}
+	return buf.String() // TODO(TimSatke) implement message formatting
+}
+
+func (l *CustomPatternLogger) Init() error {
+	tmpl, err := template.New(l.pattern).Parse(l.pattern)
+	if err != nil {
+		return err
+	}
+
+	l.template = tmpl
+	return nil
 }
 
 func (l *CustomPatternLogger) print0(a string) {
@@ -163,4 +193,21 @@ func (l *CustomPatternLogger) SetOut(out io.Writer) {
 	l.outMux.Lock()
 	defer l.outMux.Unlock()
 	l.out = out
+}
+
+// =======================================================
+
+type CustomPatternLoggerTemplateData struct {
+	RuntimeInformation
+	clock   Clock
+	Level   string
+	Message string
+}
+
+func (l *CustomPatternLoggerTemplateData) Timestamp() string {
+	return l.Timestampf(TimeLayoutCustomPatternLogger)
+}
+
+func (l *CustomPatternLoggerTemplateData) Timestampf(layout string) string {
+	return l.clock.Now().Format(layout) // the formatted timestamp
 }
