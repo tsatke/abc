@@ -10,6 +10,7 @@ stages:
 before_script:
   - dockerd > /dev/null 2>&1 &
   - cd ${CI_PROJECT_DIR}
+  - go version
 
 test:
   stage: test
