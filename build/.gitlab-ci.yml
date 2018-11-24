@@ -1,0 +1,25 @@
+image: golang:latest
+
+variables:
+  ARTIFACTS_DIR: abc
+  GO_PROJECT: gitlab.com/TimSatke/abc
+
+stages:
+  - test
+
+before_script:
+  - dockerd > /dev/null 2>&1 &
+  - cd ${CI_PROJECT_DIR}
+  - go version
+
+test:
+  stage: test
+  retry: 2
+  script:
+    - go test -v ./...
+
+benchmarks:
+  stage: test
+  allow_failure: true
+  script:
+    - go test -benchmem -bench .
