@@ -1,7 +1,6 @@
 package abc
 
 import (
-	"io/ioutil"
 	"testing"
 )
 
@@ -9,7 +8,7 @@ func BenchmarkCustomPatternLogger_Printf(b *testing.B) {
 	logger := &CustomPatternLogger{
 		clock:   &mockClock{},
 		lvl:     LevelVerbose,
-		out:     ioutil.Discard,
+		out:     &MockWriter{},
 		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
 	}
 	b.ReportAllocs()
@@ -24,7 +23,7 @@ func BenchmarkCustomPatternLogger_Printf_Stack_Ops(b *testing.B) {
 	logger := &CustomPatternLogger{
 		clock:   &mockClock{},
 		lvl:     LevelVerbose,
-		out:     ioutil.Discard,
+		out:     &MockWriter{},
 		pattern: "{{.Timestamp}} {{.File}}:{{.Line}} {{.Function}} [{{.Level}}] - {{.Message}}\n",
 	}
 	b.ReportAllocs()
