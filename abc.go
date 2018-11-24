@@ -65,6 +65,48 @@ func NewNamedLogger(name string) WriterLogger {
 	}
 }
 
+// NewCustomPatternLogger returns a new abc.CustomPatternLogger,
+// which was initialized and thus is ready to use.
+// If an error occurs during the initialization, that error is
+// returned.
+//
+// The given pattern is a go template text and supports the
+// following operations:
+//
+//	{{.Level}} // the level of the message
+// Level prints the level of the log message, at least 4 characters.
+//
+//	{{.Message}} // the message to be printed
+// Message prints the log message that should be printed.
+// If the message or the pattern doesn't end with a line break,
+// no line break will be printed.
+//
+//	{{.Timestamp}} or {{.Timestampf "2006-01-02 03:04:05PM"}} // time.Time.Format's layout is used
+// Timestampf takes a string argument, which will be used for formatting
+// the timestamp in the log message. The reference time is the same as in
+// time.Time's function "Format".
+// Timestamp uses the layout "2006-01-02 15:04:05.000".
+//
+//	{{.File}} or {{.Filef "short"}} // one of "short", "full" (anything different will be interpreted as "full")
+// Filef "short" prints only the filename, while Filef "full"
+// prints the file's absolute path.
+//
+//	{{.Line}} // prints the line of the output call
+// Line only prints the line number.
+//
+//	{{.Function}} or {{.Functionf "package"}} // one of "short", "package", "full" (anything different will be interpreted as "full")
+// Functionf "short" prints only the function name, while Functionf "package"
+// will print <package>.<function>.
+// Functionf "full" will print <full_package>.<function>, e.g. "gitlab.com/TimSatke/abc.main".
+//
+// Example:
+//
+//	{{.Timestamp}} {{.Filef "short"}}:{{.Line}} {{.Functionf "package"}} [{{.Level}}] - {{.Message}}\n
+//
+// will print something like
+//
+//	2018-11-24 15:26:44.453 main.go:16 main.main [INFO] - Hello World!
+//	<line break>
 func NewCustomPatternLogger(pattern string) (WriterLogger, error) {
 	logger := &CustomPatternLogger{
 		lvl:     LevelInfo,
@@ -76,6 +118,8 @@ func NewCustomPatternLogger(pattern string) (WriterLogger, error) {
 	return logger, err
 }
 
+// Must panics, if the given error is not nil.
+// It returns the unmodified given logger otherwise.
 func Must(logger Logger, err error) Logger {
 	if err != nil {
 		panic(fmt.Errorf("must: %v", err))

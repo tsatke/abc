@@ -15,10 +15,54 @@ import (
 const (
 	// TimeLayoutCustomPatternLogger is the time layout that the simple logger
 	// uses for its messages if no formatting pattern is given.
-	TimeLayoutCustomPatternLogger     = "2006-01-02 15:04:05.000"
+	TimeLayoutCustomPatternLogger = "2006-01-02 15:04:05.000"
+	// CustomPatternLoggerDefaultPattern is the fallback pattern that is used
+	// if the pattern compilation or template execution fails.
 	CustomPatternLoggerDefaultPattern = "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n"
 )
 
+// CustomPatternLogger is a logger that supports a custom
+// log pattern.
+// The pattern is a go template text.
+// If its compilation or execution fails at any point,
+// the CustomPatternLoggerDefaultPattern will be used.
+// It supports the
+// following operations:
+//
+//	{{.Level}} // the level of the message
+// Level prints the level of the log message, at least 4 characters.
+//
+//	{{.Message}} // the message to be printed
+// Message prints the log message that should be printed.
+// If the message or the pattern doesn't end with a line break,
+// no line break will be printed.
+//
+//	{{.Timestamp}} or {{.Timestampf "2006-01-02 03:04:05PM"}} // time.Time.Format's layout is used
+// Timestampf takes a string argument, which will be used for formatting
+// the timestamp in the log message. The reference time is the same as in
+// time.Time's function "Format".
+// Timestamp uses the layout "2006-01-02 15:04:05.000".
+//
+//	{{.File}} or {{.Filef "short"}} // one of "short", "full" (anything different will be interpreted as "full")
+// Filef "short" prints only the filename, while Filef "full"
+// prints the file's absolute path.
+//
+//	{{.Line}} // prints the line of the output call
+// Line only prints the line number.
+//
+//	{{.Function}} or {{.Functionf "package"}} // one of "short", "package", "full" (anything different will be interpreted as "full")
+// Functionf "short" prints only the function name, while Functionf "package"
+// will print <package>.<function>.
+// Functionf "full" will print <full_package>.<function>, e.g. "gitlab.com/TimSatke/abc.main".
+//
+// Example:
+//
+//	{{.Timestamp}} {{.Filef "short"}}:{{.Line}} {{.Functionf "package"}} [{{.Level}}] - {{.Message}}\n
+//
+// will print something like
+//
+//	2018-11-24 15:26:44.453 main.go:16 main.main [INFO] - Hello World!
+//	<line break>
 type CustomPatternLogger struct {
 	lvlMux sync.Mutex
 	lvl    LogLevel
@@ -70,7 +114,7 @@ func (l *CustomPatternLogger) prepareMessage(lvl LogLevel, a string) string {
 	}
 
 	buf := &bytes.Buffer{}
-	err := l.template.Execute(buf, &CustomPatternLoggerTemplateData{
+	err := l.template.Execute(buf, &customPatternLoggerTemplateData{
 		clock:   l.clock,
 		Level:   fmt.Sprintf("%-4v", lvl.String()),
 		Message: a,
@@ -215,7 +259,7 @@ func (l *CustomPatternLogger) SetOut(out io.Writer) {
 
 // =======================================================
 
-type CustomPatternLoggerTemplateData struct {
+type customPatternLoggerTemplateData struct {
 	clock   Clock
 	Level   string
 	Message string
@@ -228,40 +272,39 @@ type CustomPatternLoggerTemplateData struct {
 	function    *runtime.Func
 }
 
-func (l *CustomPatternLoggerTemplateData) Timestamp() string {
+func (l *customPatternLoggerTemplateData) Timestamp() string {
 	return l.Timestampf(TimeLayoutCustomPatternLogger)
 }
 
-func (l *CustomPatternLoggerTemplateData) Timestampf(layout string) string {
+func (l *customPatternLoggerTemplateData) Timestampf(layout string) string {
 	return l.clock.Now().Format(layout) // the formatted timestamp
 }
 
-func (l *CustomPatternLoggerTemplateData) File() string {
+func (l *customPatternLoggerTemplateData) File() string {
 	l.initCallerInfo()
 	return l.Filef("short")
 }
 
-func (l *CustomPatternLoggerTemplateData) Filef(mode string) string {
+func (l *customPatternLoggerTemplateData) Filef(mode string) string {
 	l.initCallerInfo()
 	if mode == "short" {
 		name := l.file
 		return filepath.Base(name)
-	} else {
-		return l.file // calling file
 	}
+	return l.file // calling file
 }
 
-func (l *CustomPatternLoggerTemplateData) Line() int {
+func (l *customPatternLoggerTemplateData) Line() int {
 	l.initCallerInfo()
 	return l.line // calling line number
 }
 
-func (l *CustomPatternLoggerTemplateData) Function() string {
+func (l *customPatternLoggerTemplateData) Function() string {
 	l.initCallerInfo()
 	return l.Functionf("package")
 }
 
-func (l *CustomPatternLoggerTemplateData) Functionf(mode string) string {
+func (l *customPatternLoggerTemplateData) Functionf(mode string) string {
 	l.initCallerInfo()
 	if mode == "short" {
 		name := l.function.Name()
@@ -273,7 +316,7 @@ func (l *CustomPatternLoggerTemplateData) Functionf(mode string) string {
 	}
 }
 
-func (l *CustomPatternLoggerTemplateData) initCallerInfo() {
+func (l *customPatternLoggerTemplateData) initCallerInfo() {
 	if atomic.LoadUint32(&l.initialized) == 1 {
 		return
 	}
