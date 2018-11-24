@@ -1,4 +1,4 @@
-image: registry.gitlab.com/TimSatke/abc/qa/golang-dind:latest
+image: registry.gitlab.com/timsatke/abc/qa/golang-dind:latest
 
 variables:
   ARTIFACTS_DIR: abc
