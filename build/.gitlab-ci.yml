@@ -20,5 +20,6 @@ test:
 benchmarks:
   stage: test
   retry: 2
+  allow_failure: true
   script:
     - go test -benchmem -bench .
