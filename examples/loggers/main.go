@@ -15,5 +15,6 @@ func main() {
 
 		logger.Info("I'm alive...")
 		logger.Debug("...and can print debug output!")
+		logger.Warn("Also, I can warn you if something important happens.")
 	}
 }
