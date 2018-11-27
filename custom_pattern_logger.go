@@ -143,13 +143,6 @@ func (l *CustomPatternLogger) print1(a string) {
 	io.WriteString(l.out, a)
 }
 
-// Inspect prints detailed information about the given value.
-// Very verbose, may be slow.
-// NOT RECOMMENDED FOR PRODUCTION USE.
-func (l *CustomPatternLogger) Inspect(v interface{}) {
-	panic("Unsupported") // TODO(TimSatke) custom implementation
-}
-
 // Verbose prints the given values with log level DEBG,
 // if and only if this logger has the verbose log level enabled.
 func (l *CustomPatternLogger) Verbose(v ...interface{}) {
