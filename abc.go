@@ -118,6 +118,19 @@ func NewCustomPatternLogger(pattern string) (WriterLogger, error) {
 	return logger, err
 }
 
+// NewColoredLogger creates a wrapper for a given WriterLogger.
+// Depending on the level that should be printed, this wrapper
+// will prepend an ANSI-color code to the wrapped loggers
+// output writer and will then call the respective output method.
+// Please notice that this function does not add a decorator to
+// the given logger, but creates a wrapper, which must be used
+// for colors to show up.
+func NewColoredLogger(wrapped WriterLogger) WriterLogger {
+	return &ColoredLogger{
+		wrapped: wrapped,
+	}
+}
+
 // Must panics, if the given error is not nil.
 // It returns the unmodified given logger otherwise.
 func Must(logger Logger, err error) Logger {

@@ -30,36 +30,41 @@ $ go test -count 5 -bench . -benchmem
 goos: windows
 goarch: amd64
 pkg: gitlab.com/TimSatke/abc
-BenchmarkCustomPatternLogger_Printf-8                    2000000               813 ns/op             808 B/op         21 allocs/op
-BenchmarkCustomPatternLogger_Printf-8                    2000000               796 ns/op             808 B/op         21 allocs/op
-BenchmarkCustomPatternLogger_Printf-8                    2000000               805 ns/op             808 B/op         21 allocs/op
-BenchmarkCustomPatternLogger_Printf-8                    2000000               807 ns/op             808 B/op         21 allocs/op
-BenchmarkCustomPatternLogger_Printf-8                    2000000               795 ns/op             808 B/op         21 allocs/op
-BenchmarkCustomPatternLogger_Printf_Stack_Ops-8          1000000              2597 ns/op            1897 B/op         43 allocs/op
-BenchmarkCustomPatternLogger_Printf_Stack_Ops-8           500000              2582 ns/op            1897 B/op         43 allocs/op
-BenchmarkCustomPatternLogger_Printf_Stack_Ops-8           500000              2541 ns/op            1897 B/op         43 allocs/op
-BenchmarkCustomPatternLogger_Printf_Stack_Ops-8           500000              2550 ns/op            1897 B/op         43 allocs/op
-BenchmarkCustomPatternLogger_Printf_Stack_Ops-8           500000              2641 ns/op            1897 B/op         43 allocs/op
-BenchmarkNamedLogger_Printf-8                            5000000               241 ns/op             368 B/op          9 allocs/op
-BenchmarkNamedLogger_Printf-8                           10000000               244 ns/op             368 B/op          9 allocs/op
-BenchmarkNamedLogger_Printf-8                           10000000               245 ns/op             368 B/op          9 allocs/op
-BenchmarkNamedLogger_Printf-8                            5000000               245 ns/op             368 B/op          9 allocs/op
-BenchmarkNamedLogger_Printf-8                            5000000               245 ns/op             368 B/op          9 allocs/op
-BenchmarkSimpleLogger_Printf-8                          10000000               230 ns/op             304 B/op          8 allocs/op
-BenchmarkSimpleLogger_Printf-8                          10000000               229 ns/op             304 B/op          8 allocs/op
-BenchmarkSimpleLogger_Printf-8                          10000000               224 ns/op             304 B/op          8 allocs/op
-BenchmarkSimpleLogger_Printf-8                           5000000               229 ns/op             304 B/op          8 allocs/op
-BenchmarkSimpleLogger_Printf-8                           5000000               225 ns/op             304 B/op          8 allocs/op
-BenchmarkStdLogger-8                                     3000000               478 ns/op              96 B/op          2 allocs/op
-BenchmarkStdLogger-8                                     3000000               481 ns/op              96 B/op          2 allocs/op
-BenchmarkStdLogger-8                                     3000000               473 ns/op              96 B/op          2 allocs/op
-BenchmarkStdLogger-8                                     3000000               472 ns/op              96 B/op          2 allocs/op
-BenchmarkStdLogger-8                                     3000000               472 ns/op              96 B/op          2 allocs/op
-BenchmarkStdLogger_Stackops-8                            1000000              1205 ns/op             176 B/op          2 allocs/op
-BenchmarkStdLogger_Stackops-8                            1000000              1211 ns/op             176 B/op          2 allocs/op
+BenchmarkColoredLogger_SimpleLogger_Printf-8             1000000              1064 ns/op             320 B/op          9 allocs/op
+BenchmarkColoredLogger_SimpleLogger_Printf-8             1000000              1055 ns/op             320 B/op          9 allocs/op
+BenchmarkColoredLogger_SimpleLogger_Printf-8             1000000              1058 ns/op             320 B/op          9 allocs/op
+BenchmarkColoredLogger_SimpleLogger_Printf-8             1000000              1060 ns/op             320 B/op          9 allocs/op
+BenchmarkColoredLogger_SimpleLogger_Printf-8             1000000              1051 ns/op             320 B/op          9 allocs/op
+BenchmarkCustomPatternLogger_Printf-8                    2000000               785 ns/op             808 B/op         21 allocs/op
+BenchmarkCustomPatternLogger_Printf-8                    2000000               794 ns/op             808 B/op         21 allocs/op
+BenchmarkCustomPatternLogger_Printf-8                    2000000               790 ns/op             808 B/op         21 allocs/op
+BenchmarkCustomPatternLogger_Printf-8                    2000000               777 ns/op             808 B/op         21 allocs/op
+BenchmarkCustomPatternLogger_Printf-8                    2000000               763 ns/op             808 B/op         21 allocs/op
+BenchmarkCustomPatternLogger_Printf_Stack_Ops-8          1000000              2590 ns/op            1897 B/op         43 allocs/op
+BenchmarkCustomPatternLogger_Printf_Stack_Ops-8           500000              2575 ns/op            1897 B/op         43 allocs/op
+BenchmarkCustomPatternLogger_Printf_Stack_Ops-8           500000              2424 ns/op            1897 B/op         43 allocs/op
+BenchmarkCustomPatternLogger_Printf_Stack_Ops-8           500000              2479 ns/op            1897 B/op         43 allocs/op
+BenchmarkCustomPatternLogger_Printf_Stack_Ops-8           500000              2657 ns/op            1897 B/op         43 allocs/op
+BenchmarkNamedLogger_Printf-8                           10000000               238 ns/op             368 B/op          9 allocs/op
+BenchmarkNamedLogger_Printf-8                           10000000               236 ns/op             368 B/op          9 allocs/op
+BenchmarkNamedLogger_Printf-8                            5000000               243 ns/op             368 B/op          9 allocs/op
+BenchmarkNamedLogger_Printf-8                            5000000               238 ns/op             368 B/op          9 allocs/op
+BenchmarkNamedLogger_Printf-8                           10000000               250 ns/op             368 B/op          9 allocs/op
+BenchmarkSimpleLogger_Printf-8                           5000000               250 ns/op             304 B/op          8 allocs/op
+BenchmarkSimpleLogger_Printf-8                           5000000               249 ns/op             304 B/op          8 allocs/op
+BenchmarkSimpleLogger_Printf-8                           5000000               244 ns/op             304 B/op          8 allocs/op
+BenchmarkSimpleLogger_Printf-8                           5000000               254 ns/op             304 B/op          8 allocs/op
+BenchmarkSimpleLogger_Printf-8                           5000000               274 ns/op             304 B/op          8 allocs/op
+BenchmarkStdLogger-8                                     3000000               470 ns/op              96 B/op          2 allocs/op
+BenchmarkStdLogger-8                                     3000000               469 ns/op              96 B/op          2 allocs/op
+BenchmarkStdLogger-8                                     3000000               475 ns/op              96 B/op          2 allocs/op
+BenchmarkStdLogger-8                                     3000000               471 ns/op              96 B/op          2 allocs/op
+BenchmarkStdLogger-8                                     3000000               470 ns/op              96 B/op          2 allocs/op
+BenchmarkStdLogger_Stackops-8                            1000000              1199 ns/op             176 B/op          2 allocs/op
+BenchmarkStdLogger_Stackops-8                            1000000              1183 ns/op             176 B/op          2 allocs/op
+BenchmarkStdLogger_Stackops-8                            1000000              1184 ns/op             176 B/op          2 allocs/op
+BenchmarkStdLogger_Stackops-8                            1000000              1189 ns/op             176 B/op          2 allocs/op
 BenchmarkStdLogger_Stackops-8                            1000000              1213 ns/op             176 B/op          2 allocs/op
-BenchmarkStdLogger_Stackops-8                            1000000              1206 ns/op             176 B/op          2 allocs/op
-BenchmarkStdLogger_Stackops-8                            1000000              1216 ns/op             176 B/op          2 allocs/op
 PASS
-ok      gitlab.com/TimSatke/abc 56.298s
+ok      gitlab.com/TimSatke/abc 59.162s
 ```
