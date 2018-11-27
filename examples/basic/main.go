@@ -18,5 +18,5 @@ func main() {
 	logger.Error("Still printing...")
 
 	abc.SetRoot(logger)
-	abc.Info("Now you can use me globally")
+	abc.Warn("Now you can use me globally")
 }
