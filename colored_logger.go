@@ -7,6 +7,7 @@ import (
 
 type color []byte
 
+// Available colors (16 bit ANSI color codes)
 var (
 	ColorGray   = color("\u001b[30;1m")
 	ColorGreen  = color("\u001b[32;1m")
