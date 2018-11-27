@@ -7,6 +7,7 @@ func main() {
 		abc.NewSimpleLogger(),
 		abc.NewNamedLogger("MyLogger"),
 		abc.Must(abc.NewCustomPatternLogger(`{{.Timestamp}} {{.File}}:{{.Line}} {{.Function}} [{{.Level}}] - {{.Message}}` + "\n")),
+		abc.NewColoredLogger(abc.NewSimpleLogger()),
 	}
 
 	for _, logger := range loggers {
