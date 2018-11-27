@@ -4,11 +4,13 @@ import (
 	"testing"
 )
 
-func BenchmarkSimpleLogger_Printf(b *testing.B) {
-	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   &MockWriter{},
+func BenchmarkColoredLogger_SimpleLogger_Printf(b *testing.B) {
+	logger := &ColoredLogger{
+		wrapped: &SimpleLogger{
+			clock: &mockClock{},
+			lvl:   LevelVerbose,
+			out:   &MockWriter{},
+		},
 	}
 	b.ReportAllocs()
 	b.ResetTimer()

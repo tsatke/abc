@@ -13,10 +13,6 @@ type Logger interface {
 	// equal to the one of this logger.
 	Printf(LogLevel, string, ...interface{})
 
-	// Inspect prints detailed information about the given value.
-	// Very verbose, may be slow.
-	// NOT RECOMMENDED FOR PRODUCTION USE.
-	Inspect(interface{})
 	// Verbose prints the given values with log level DEBG,
 	// if and only if this logger has the verbose log level enabled.
 	Verbose(...interface{})

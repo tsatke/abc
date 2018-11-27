@@ -8,13 +8,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSimpleLogger_Printf(t *testing.T) {
+func TestColoredLogger_Printf(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
+	l := &SimpleLogger{
 		clock: &mockClock{},
 		lvl:   LevelDebug,
 		out:   buf,
+	}
+
+	logger := &ColoredLogger{
+		wrapped: l,
 	}
 
 	type args struct {
@@ -24,7 +28,7 @@ func TestSimpleLogger_Printf(t *testing.T) {
 	}
 	tests := []struct {
 		name     string
-		s        *SimpleLogger
+		s        *ColoredLogger
 		args     args
 		expected string
 	}{
@@ -36,7 +40,7 @@ func TestSimpleLogger_Printf(t *testing.T) {
 				"%v",
 				[]interface{}{"abc"},
 			},
-			"0001-01-01 00:00:00.000 [INFO] - abc\n",
+			string(ColorGreen) + "0001-01-01 00:00:00.000 [INFO] - abc\n" + string(ColorReset),
 		},
 		{
 			"Print single string with same log level",
@@ -46,7 +50,37 @@ func TestSimpleLogger_Printf(t *testing.T) {
 				"%v",
 				[]interface{}{"abc"},
 			},
-			"0001-01-01 00:00:00.000 [DEBG] - abc\n",
+			string(ColorNone) + "0001-01-01 00:00:00.000 [DEBG] - abc\n" + string(ColorReset),
+		},
+		{
+			"Print single string with higher log level (WARN)",
+			logger,
+			args{
+				LevelWarn,
+				"%v",
+				[]interface{}{"abc"},
+			},
+			string(ColorYellow) + "0001-01-01 00:00:00.000 [WARN] - abc\n" + string(ColorReset),
+		},
+		{
+			"Print single string with higher log level (ERR)",
+			logger,
+			args{
+				LevelError,
+				"%v",
+				[]interface{}{"abc"},
+			},
+			string(ColorRed) + "0001-01-01 00:00:00.000 [ERR ] - abc\n" + string(ColorReset),
+		},
+		{
+			"Print single string with higher log level (FATAL)",
+			logger,
+			args{
+				LevelFatal,
+				"%v",
+				[]interface{}{"abc"},
+			},
+			string(ColorRed) + "0001-01-01 00:00:00.000 [FATAL] - abc\n" + string(ColorReset),
 		},
 		{
 			"Output suppressed due to log level",
@@ -77,13 +111,17 @@ func TestSimpleLogger_Printf(t *testing.T) {
 	}
 }
 
-func TestSimpleLogger_Print(t *testing.T) {
+func TestColoredLogger_Print(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
+	l := &SimpleLogger{
 		clock: &mockClock{},
 		lvl:   LevelDebug,
 		out:   buf,
+	}
+
+	logger := &ColoredLogger{
+		wrapped: l,
 	}
 
 	type args struct {
@@ -92,7 +130,7 @@ func TestSimpleLogger_Print(t *testing.T) {
 	}
 	tests := []struct {
 		name     string
-		s        *SimpleLogger
+		s        *ColoredLogger
 		args     args
 		expected string
 	}{
@@ -103,7 +141,7 @@ func TestSimpleLogger_Print(t *testing.T) {
 				LevelInfo,
 				[]interface{}{"abc"},
 			},
-			"0001-01-01 00:00:00.000 [INFO] - abc\n",
+			string(ColorGreen) + "0001-01-01 00:00:00.000 [INFO] - abc\n" + string(ColorReset),
 		},
 		{
 			"Print single string with same log level",
@@ -112,7 +150,34 @@ func TestSimpleLogger_Print(t *testing.T) {
 				LevelDebug,
 				[]interface{}{"abc"},
 			},
-			"0001-01-01 00:00:00.000 [DEBG] - abc\n",
+			string(ColorNone) + "0001-01-01 00:00:00.000 [DEBG] - abc\n" + string(ColorReset),
+		},
+		{
+			"Print single string with higher log level (WARN)",
+			logger,
+			args{
+				LevelWarn,
+				[]interface{}{"abc"},
+			},
+			string(ColorYellow) + "0001-01-01 00:00:00.000 [WARN] - abc\n" + string(ColorReset),
+		},
+		{
+			"Print single string with higher log level (ERR)",
+			logger,
+			args{
+				LevelError,
+				[]interface{}{"abc"},
+			},
+			string(ColorRed) + "0001-01-01 00:00:00.000 [ERR ] - abc\n" + string(ColorReset),
+		},
+		{
+			"Print single string with higher log level (FATAL)",
+			logger,
+			args{
+				LevelFatal,
+				[]interface{}{"abc"},
+			},
+			string(ColorRed) + "0001-01-01 00:00:00.000 [FATAL] - abc\n" + string(ColorReset),
 		},
 		{
 			"Output suppressed due to log level",
@@ -122,30 +187,6 @@ func TestSimpleLogger_Print(t *testing.T) {
 				[]interface{}{"abc"},
 			},
 			"",
-		},
-		{
-			"Print slice of strings",
-			logger,
-			args{
-				LevelDebug,
-				[]interface{}{[]string{"a", "b", "c"}},
-			},
-			"0001-01-01 00:00:00.000 [DEBG] - [a b c]\n",
-		},
-		{
-			"Print struct",
-			logger,
-			args{
-				LevelDebug,
-				[]interface{}{struct {
-					a string
-					b float64
-				}{
-					a: "abc",
-					b: -0.1,
-				}},
-			},
-			"0001-01-01 00:00:00.000 [DEBG] - {abc -0.1}\n",
 		},
 	}
 	for _, tt := range tests {
@@ -166,29 +207,33 @@ func TestSimpleLogger_Print(t *testing.T) {
 	}
 }
 
-func TestSimpleLogger_All_Outputs(t *testing.T) {
+func TestColoredLogger_All_Outputs(t *testing.T) {
 	expectations := []string{
-		"0001-01-01 00:00:00.000 [DEBG] - verbose: abc\n",
-		"0001-01-01 00:00:00.000 [DEBG] - verbose: fmt: abc\n",
-		"0001-01-01 00:00:00.000 [DEBG] - abc\n",
-		"0001-01-01 00:00:00.000 [DEBG] - fmt: abc\n",
-		"0001-01-01 00:00:00.000 [INFO] - abc\n",
-		"0001-01-01 00:00:00.000 [INFO] - fmt: abc\n",
-		"0001-01-01 00:00:00.000 [WARN] - abc\n",
-		"0001-01-01 00:00:00.000 [WARN] - fmt: abc\n",
-		"0001-01-01 00:00:00.000 [ERR ] - abc\n",
-		"0001-01-01 00:00:00.000 [ERR ] - fmt: abc\n",
-		"0001-01-01 00:00:00.000 [FATAL] - abc\n",
-		"0001-01-01 00:00:00.000 [FATAL] - fmt: abc\n",
+		string(ColorGray) + "0001-01-01 00:00:00.000 [DEBG] - verbose: abc\n" + string(ColorReset),
+		string(ColorGray) + "0001-01-01 00:00:00.000 [DEBG] - verbose: fmt: abc\n" + string(ColorReset),
+		string(ColorNone) + "0001-01-01 00:00:00.000 [DEBG] - abc\n" + string(ColorReset),
+		string(ColorNone) + "0001-01-01 00:00:00.000 [DEBG] - fmt: abc\n" + string(ColorReset),
+		string(ColorGreen) + "0001-01-01 00:00:00.000 [INFO] - abc\n" + string(ColorReset),
+		string(ColorGreen) + "0001-01-01 00:00:00.000 [INFO] - fmt: abc\n" + string(ColorReset),
+		string(ColorYellow) + "0001-01-01 00:00:00.000 [WARN] - abc\n" + string(ColorReset),
+		string(ColorYellow) + "0001-01-01 00:00:00.000 [WARN] - fmt: abc\n" + string(ColorReset),
+		string(ColorRed) + "0001-01-01 00:00:00.000 [ERR ] - abc\n" + string(ColorReset),
+		string(ColorRed) + "0001-01-01 00:00:00.000 [ERR ] - fmt: abc\n" + string(ColorReset),
+		string(ColorRed) + "0001-01-01 00:00:00.000 [FATAL] - abc\n" + string(ColorReset),
+		string(ColorRed) + "0001-01-01 00:00:00.000 [FATAL] - fmt: abc\n" + string(ColorReset),
 	}
 	cnt := 0
 
 	buf := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
+	l := &SimpleLogger{
 		clock: &mockClock{},
 		lvl:   LevelVerbose,
 		out:   buf,
+	}
+
+	logger := &ColoredLogger{
+		wrapped: l,
 	}
 
 	check := func() {
@@ -240,20 +285,24 @@ func TestSimpleLogger_All_Outputs(t *testing.T) {
 	check()
 }
 
-func TestSimpleLogger_SetOut(t *testing.T) {
+func TestColoredLogger_SetOut(t *testing.T) {
 	assert := assert.New(t)
 
 	buf1 := &bytes.Buffer{}
 	buf2 := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
+	l := &SimpleLogger{
 		clock: &mockClock{},
 		lvl:   LevelVerbose,
 		out:   buf1,
 	}
 
+	logger := &ColoredLogger{
+		wrapped: l,
+	}
+
 	logger.Info("foo")
-	assert.Equal("0001-01-01 00:00:00.000 [INFO] - foo\n", buf1.String(), "buf1 did receive wrong output.")
+	assert.Equal(string(ColorGreen)+"0001-01-01 00:00:00.000 [INFO] - foo\n"+string(ColorReset), buf1.String(), "buf1 did receive wrong output.")
 	assert.Equal("", buf2.String(), "buf2 did receive output.")
 
 	buf1.Reset()
@@ -263,7 +312,7 @@ func TestSimpleLogger_SetOut(t *testing.T) {
 
 	logger.Info("bar")
 	assert.Equal("", buf1.String(), "buf1 did receive output.")
-	assert.Equal("0001-01-01 00:00:00.000 [INFO] - bar\n", buf2.String(), "buf2 did receive wrong output.")
+	assert.Equal(string(ColorGreen)+"0001-01-01 00:00:00.000 [INFO] - bar\n"+string(ColorReset), buf2.String(), "buf2 did receive wrong output.")
 
 	buf1.Reset()
 	buf2.Reset()
@@ -271,23 +320,27 @@ func TestSimpleLogger_SetOut(t *testing.T) {
 	logger.SetOut(buf1) // resetting out
 
 	logger.Info("abc")
-	assert.Equal("0001-01-01 00:00:00.000 [INFO] - abc\n", buf1.String(), "buf1 did receive wrong output.")
+	assert.Equal(string(ColorGreen)+"0001-01-01 00:00:00.000 [INFO] - abc\n"+string(ColorReset), buf1.String(), "buf1 did receive wrong output.")
 	assert.Equal("", buf2.String(), "buf2 did receive output.")
 }
 
-func TestSimpleLogger_SetLevel(t *testing.T) {
+func TestColoredLogger_SetLevel(t *testing.T) {
 	assert := assert.New(t)
 
 	buf := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
+	l := &SimpleLogger{
 		clock: &mockClock{},
 		lvl:   LevelVerbose,
 		out:   buf,
 	}
 
+	logger := &ColoredLogger{
+		wrapped: l,
+	}
+
 	logger.Verbose("foo")
-	assert.Equal("0001-01-01 00:00:00.000 [DEBG] - foo\n", buf.String(), "buf did receive wrong output.")
+	assert.Equal(string(ColorGray)+"0001-01-01 00:00:00.000 [DEBG] - foo\n"+string(ColorNone), buf.String(), "buf did receive wrong output.")
 
 	buf.Reset()                // reset buffer
 	logger.SetLevel(LevelInfo) // set new level

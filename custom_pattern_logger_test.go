@@ -8,13 +8,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSimpleLogger_Printf(t *testing.T) {
+func TestCustomPatternLogger_Printf(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelDebug,
-		out:   buf,
+	logger := &CustomPatternLogger{
+		clock:   &mockClock{},
+		lvl:     LevelDebug,
+		out:     buf,
+		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
 	}
 
 	type args struct {
@@ -24,7 +25,7 @@ func TestSimpleLogger_Printf(t *testing.T) {
 	}
 	tests := []struct {
 		name     string
-		s        *SimpleLogger
+		s        *CustomPatternLogger
 		args     args
 		expected string
 	}{
@@ -77,13 +78,14 @@ func TestSimpleLogger_Printf(t *testing.T) {
 	}
 }
 
-func TestSimpleLogger_Print(t *testing.T) {
+func TestCustomPatternLogger_Print(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelDebug,
-		out:   buf,
+	logger := &CustomPatternLogger{
+		clock:   &mockClock{},
+		lvl:     LevelDebug,
+		out:     buf,
+		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
 	}
 
 	type args struct {
@@ -92,7 +94,7 @@ func TestSimpleLogger_Print(t *testing.T) {
 	}
 	tests := []struct {
 		name     string
-		s        *SimpleLogger
+		s        *CustomPatternLogger
 		args     args
 		expected string
 	}{
@@ -166,7 +168,7 @@ func TestSimpleLogger_Print(t *testing.T) {
 	}
 }
 
-func TestSimpleLogger_All_Outputs(t *testing.T) {
+func TestCustomPatternLogger_All_Outputs(t *testing.T) {
 	expectations := []string{
 		"0001-01-01 00:00:00.000 [DEBG] - verbose: abc\n",
 		"0001-01-01 00:00:00.000 [DEBG] - verbose: fmt: abc\n",
@@ -185,10 +187,11 @@ func TestSimpleLogger_All_Outputs(t *testing.T) {
 
 	buf := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
+	logger := &CustomPatternLogger{
+		clock:   &mockClock{},
+		lvl:     LevelVerbose,
+		out:     buf,
+		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
 	}
 
 	check := func() {
@@ -240,16 +243,17 @@ func TestSimpleLogger_All_Outputs(t *testing.T) {
 	check()
 }
 
-func TestSimpleLogger_SetOut(t *testing.T) {
+func TestCustomPatternLogger_SetOut(t *testing.T) {
 	assert := assert.New(t)
 
 	buf1 := &bytes.Buffer{}
 	buf2 := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf1,
+	logger := &CustomPatternLogger{
+		clock:   &mockClock{},
+		lvl:     LevelVerbose,
+		out:     buf1,
+		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
 	}
 
 	logger.Info("foo")
@@ -275,15 +279,16 @@ func TestSimpleLogger_SetOut(t *testing.T) {
 	assert.Equal("", buf2.String(), "buf2 did receive output.")
 }
 
-func TestSimpleLogger_SetLevel(t *testing.T) {
+func TestCustomPatternLogger_SetLevel(t *testing.T) {
 	assert := assert.New(t)
 
 	buf := &bytes.Buffer{}
 
-	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
+	logger := &CustomPatternLogger{
+		clock:   &mockClock{},
+		lvl:     LevelVerbose,
+		out:     buf,
+		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
 	}
 
 	logger.Verbose("foo")

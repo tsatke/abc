@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNamedLogger_Printf(t *testing.T) {
@@ -240,4 +241,62 @@ func TestNamedLogger_All_Outputs(t *testing.T) {
 	check()
 	logger.Fatalf("fmt: %v", "abc")
 	check()
+}
+
+func TestNamedLogger_SetOut(t *testing.T) {
+	assert := assert.New(t)
+
+	buf1 := &bytes.Buffer{}
+	buf2 := &bytes.Buffer{}
+
+	logger := &NamedLogger{
+		clock: &mockClock{},
+		lvl:   LevelVerbose,
+		out:   buf1,
+		name:  "MyLogger",
+	}
+
+	logger.Info("foo")
+	assert.Equal("0001-01-01 00:00:00.000 <MyLogger> [INFO] - foo\n", buf1.String(), "buf1 did receive wrong output.")
+	assert.Equal("", buf2.String(), "buf2 did receive output.")
+
+	buf1.Reset()
+	buf2.Reset()
+
+	logger.SetOut(buf2) // setting new out
+
+	logger.Info("bar")
+	assert.Equal("", buf1.String(), "buf1 did receive output.")
+	assert.Equal("0001-01-01 00:00:00.000 <MyLogger> [INFO] - bar\n", buf2.String(), "buf2 did receive wrong output.")
+
+	buf1.Reset()
+	buf2.Reset()
+
+	logger.SetOut(buf1) // resetting out
+
+	logger.Info("abc")
+	assert.Equal("0001-01-01 00:00:00.000 <MyLogger> [INFO] - abc\n", buf1.String(), "buf1 did receive wrong output.")
+	assert.Equal("", buf2.String(), "buf2 did receive output.")
+}
+
+func TestNamedLogger_SetLevel(t *testing.T) {
+	assert := assert.New(t)
+
+	buf := &bytes.Buffer{}
+
+	logger := &NamedLogger{
+		clock: &mockClock{},
+		lvl:   LevelVerbose,
+		out:   buf,
+		name:  "MyLogger",
+	}
+
+	logger.Verbose("foo")
+	assert.Equal("0001-01-01 00:00:00.000 <MyLogger> [DEBG] - foo\n", buf.String(), "buf did receive wrong output.")
+
+	buf.Reset()                // reset buffer
+	logger.SetLevel(LevelInfo) // set new level
+
+	logger.Verbose("foo")
+	assert.Equal("", buf.String(), "buf did receive output.")
 }
