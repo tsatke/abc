@@ -159,11 +159,6 @@ func Printf(lvl LogLevel, format string, v ...interface{}) {
 	}
 }
 
-// Inspect is coming soon...
-func Inspect(v interface{}) {
-	panic("Unsupported") // TODO(TimSatke) custom implementation
-}
-
 // Verbose prints the given values with log level DEBG,
 // but the root logger must have verbose log levels enabled
 // to show any output.

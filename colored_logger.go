@@ -99,10 +99,6 @@ func (s *ColoredLogger) getColorForLevel(lvl LogLevel) color {
 	}
 }
 
-func (s *ColoredLogger) Inspect(v interface{}) {
-	panic("Unsupported")
-}
-
 // Verbose delegates the given values to the wrapped logger
 // while writing ansi color codes to the wrapped loggers output writer.
 func (s *ColoredLogger) Verbose(v ...interface{}) {

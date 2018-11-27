@@ -51,13 +51,6 @@ func (s *SimpleLogger) print0(a string) {
 	io.WriteString(s.out, a)
 }
 
-// Inspect prints detailed information about the given value.
-// Very verbose, may be slow.
-// NOT RECOMMENDED FOR PRODUCTION USE.
-func (s *SimpleLogger) Inspect(v interface{}) {
-	panic("Unsupported") // TODO(TimSatke) custom implementation
-}
-
 // Verbose prints the given values with log level DEBG,
 // if and only if this logger has the verbose log level enabled.
 func (s *SimpleLogger) Verbose(v ...interface{}) {
