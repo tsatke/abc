@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestColoredLogger_Printf(t *testing.T) {
@@ -282,4 +283,68 @@ func TestColoredLogger_All_Outputs(t *testing.T) {
 	check()
 	logger.Fatalf("fmt: %v", "abc")
 	check()
+}
+
+func TestColoredLogger_SetOut(t *testing.T) {
+	assert := assert.New(t)
+
+	buf1 := &bytes.Buffer{}
+	buf2 := &bytes.Buffer{}
+
+	l := &SimpleLogger{
+		clock: &mockClock{},
+		lvl:   LevelVerbose,
+		out:   buf1,
+	}
+
+	logger := &ColoredLogger{
+		wrapped: l,
+	}
+
+	logger.Info("foo")
+	assert.Equal(string(ColorGreen)+"0001-01-01 00:00:00.000 [INFO] - foo\n"+string(ColorReset), buf1.String(), "buf1 did receive wrong output.")
+	assert.Equal("", buf2.String(), "buf2 did receive output.")
+
+	buf1.Reset()
+	buf2.Reset()
+
+	logger.SetOut(buf2) // setting new out
+
+	logger.Info("bar")
+	assert.Equal("", buf1.String(), "buf1 did receive output.")
+	assert.Equal(string(ColorGreen)+"0001-01-01 00:00:00.000 [INFO] - bar\n"+string(ColorReset), buf2.String(), "buf2 did receive wrong output.")
+
+	buf1.Reset()
+	buf2.Reset()
+
+	logger.SetOut(buf1) // resetting out
+
+	logger.Info("abc")
+	assert.Equal(string(ColorGreen)+"0001-01-01 00:00:00.000 [INFO] - abc\n"+string(ColorReset), buf1.String(), "buf1 did receive wrong output.")
+	assert.Equal("", buf2.String(), "buf2 did receive output.")
+}
+
+func TestColoredLogger_SetLevel(t *testing.T) {
+	assert := assert.New(t)
+
+	buf := &bytes.Buffer{}
+
+	l := &SimpleLogger{
+		clock: &mockClock{},
+		lvl:   LevelVerbose,
+		out:   buf,
+	}
+
+	logger := &ColoredLogger{
+		wrapped: l,
+	}
+
+	logger.Verbose("foo")
+	assert.Equal(string(ColorGray)+"0001-01-01 00:00:00.000 [DEBG] - foo\n"+string(ColorNone), buf.String(), "buf did receive wrong output.")
+
+	buf.Reset()                // reset buffer
+	logger.SetLevel(LevelInfo) // set new level
+
+	logger.Verbose("foo")
+	assert.Equal("", buf.String(), "buf did receive output.")
 }
