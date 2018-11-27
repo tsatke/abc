@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/sergi/go-diff/diffmatchpatch"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestColoredLogger_Printf(t *testing.T) {
+	assert := assert.New(t)
+
 	buf := &bytes.Buffer{}
 
 	l := &SimpleLogger{
@@ -98,20 +99,14 @@ func TestColoredLogger_Printf(t *testing.T) {
 			defer buf.Reset()
 
 			tt.s.Printf(tt.args.lvl, tt.args.format, tt.args.v...)
-			if buf.String() != tt.expected {
-				dmp := diffmatchpatch.New()
-				diffs := dmp.DiffMain(tt.expected, buf.String(), false)
-
-				t.Fail()
-				t.Logf(`Expected "%v"`, tt.expected)
-				t.Logf(`Received "%v"`, buf.String())
-				t.Logf("Diff: %v", dmp.DiffPrettyText(diffs))
-			}
+			assert.Equal(tt.expected, buf.String(), "Wrong output")
 		})
 	}
 }
 
 func TestColoredLogger_Print(t *testing.T) {
+	assert := assert.New(t)
+
 	buf := &bytes.Buffer{}
 
 	l := &SimpleLogger{
@@ -194,20 +189,14 @@ func TestColoredLogger_Print(t *testing.T) {
 			defer buf.Reset()
 
 			tt.s.Print(tt.args.lvl, tt.args.v...)
-			if buf.String() != tt.expected {
-				dmp := diffmatchpatch.New()
-				diffs := dmp.DiffMain(tt.expected, buf.String(), false)
-
-				t.Fail()
-				t.Logf(`Expected "%v"`, tt.expected)
-				t.Logf(`Received "%v"`, buf.String())
-				t.Logf("Diff: %v", dmp.DiffPrettyText(diffs))
-			}
+			assert.Equal(tt.expected, buf.String(), "Wrong output")
 		})
 	}
 }
 
 func TestColoredLogger_All_Outputs(t *testing.T) {
+	assert := assert.New(t)
+
 	expectations := []string{
 		string(ColorGray) + "0001-01-01 00:00:00.000 [DEBG] - verbose: abc\n" + string(ColorReset),
 		string(ColorGray) + "0001-01-01 00:00:00.000 [DEBG] - verbose: fmt: abc\n" + string(ColorReset),
@@ -246,15 +235,7 @@ func TestColoredLogger_All_Outputs(t *testing.T) {
 			panic("No more expectations")
 		}
 
-		if buf.String() != expectations[cnt] {
-			dmp := diffmatchpatch.New()
-			diffs := dmp.DiffMain(expectations[cnt], buf.String(), false)
-
-			t.Fail()
-			t.Logf(`Expected "%v"`, expectations[cnt])
-			t.Logf(`Received "%v"`, buf.String())
-			t.Logf("Diff: %v", dmp.DiffPrettyText(diffs))
-		}
+		assert.Equal(expectations[cnt], buf.String(), "Wrong output")
 	}
 
 	// actual test flow
@@ -309,6 +290,7 @@ func TestColoredLogger_SetOut(t *testing.T) {
 	buf2.Reset()
 
 	logger.SetOut(buf2) // setting new out
+	assert.Equal(logger.Out(), buf2, "New output was not set")
 
 	logger.Info("bar")
 	assert.Equal("", buf1.String(), "buf1 did receive output.")
@@ -318,6 +300,7 @@ func TestColoredLogger_SetOut(t *testing.T) {
 	buf2.Reset()
 
 	logger.SetOut(buf1) // resetting out
+	assert.Equal(logger.Out(), buf1, "New output was not set")
 
 	logger.Info("abc")
 	assert.Equal(string(ColorGreen)+"0001-01-01 00:00:00.000 [INFO] - abc\n"+string(ColorReset), buf1.String(), "buf1 did receive wrong output.")
