@@ -17,9 +17,3 @@ test:
   retry: 2
   script:
     - go test -v ./...
-
-benchmarks:
-  stage: test
-  allow_failure: true
-  script:
-    - go test -benchmem -bench .
