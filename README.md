@@ -1,5 +1,5 @@
 [![pipeline status](https://gitlab.com/TimSatke/abc/badges/develop/pipeline.svg)](https://gitlab.com/TimSatke/abc/pipelines)
-[![coverage report](https://gitlab.com/TimSatke/abc/badges/develop/coverage.svg)](https://codecov.io/gl/TimSatke/abc)
+[![coverage report](https://codecov.io/gl/TimSatke/abc/branch/develop/graphs/badge.svg)](https://codecov.io/gl/TimSatke/abc)
 [![Go Report Card](https://goreportcard.com/badge/gitlab.com/TimSatke/abc)](https://goreportcard.com/report/gitlab.com/TimSatke/abc)
 
 # abc
