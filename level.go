@@ -1,5 +1,7 @@
 package abc
 
+import "strings"
+
 // LogLevel is an alias and represents a log level.
 type LogLevel uint8
 
@@ -37,4 +39,22 @@ func (l LogLevel) String() string {
 		return "FATAL"
 	}
 	return ""
+}
+
+func ToLogLevel(levelName string) LogLevel {
+	switch strings.ToLower(levelName) {
+	case "verbose":
+		return LevelVerbose
+	case "debug", "debg":
+		return LevelDebug
+	case "info":
+		return LevelInfo
+	case "warn":
+		return LevelWarn
+	case "error", "err":
+		return LevelError
+	case "fatal":
+		return LevelFatal
+	}
+	return LevelWarn
 }

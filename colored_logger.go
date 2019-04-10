@@ -180,6 +180,10 @@ func (s *ColoredLogger) SetLevel(lvl LogLevel) {
 	s.wrapped.SetLevel(lvl)
 }
 
+func (s *ColoredLogger) SetLevelString(level string) {
+	s.SetLevel(ToLogLevel(level))
+}
+
 // IsLevelEnabled delegates to the wrapped loggers IsLevelEnabled method.
 func (s *ColoredLogger) IsLevelEnabled(lvl LogLevel) bool {
 	return s.wrapped.IsLevelEnabled(lvl)

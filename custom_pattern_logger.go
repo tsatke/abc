@@ -219,6 +219,10 @@ func (l *CustomPatternLogger) SetLevel(lvl LogLevel) {
 	l.lvl = lvl
 }
 
+func (s *CustomPatternLogger) SetLevelString(level string) {
+	s.SetLevel(ToLogLevel(level))
+}
+
 // IsLevelEnabled returns true if and only if this logger would print
 // messages with the given log level.
 // False otherwise.

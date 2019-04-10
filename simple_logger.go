@@ -127,6 +127,10 @@ func (s *SimpleLogger) SetLevel(lvl LogLevel) {
 	s.lvl = lvl
 }
 
+func (s *SimpleLogger) SetLevelString(level string) {
+	s.SetLevel(ToLogLevel(level))
+}
+
 // IsLevelEnabled returns true if and only if this logger would print
 // messages with the given log level.
 // False otherwise.
