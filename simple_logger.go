@@ -117,6 +117,9 @@ func (s *SimpleLogger) Fatalf(format string, v ...interface{}) {
 
 // Level returns the current level of this logger.
 func (s *SimpleLogger) Level() LogLevel {
+	s.lvlMux.Lock()
+	defer s.lvlMux.Unlock()
+
 	return s.lvl
 }
 
@@ -135,7 +138,7 @@ func (s *SimpleLogger) SetLevelString(level string) {
 // messages with the given log level.
 // False otherwise.
 func (s *SimpleLogger) IsLevelEnabled(lvl LogLevel) bool {
-	return lvl >= s.lvl
+	return lvl >= s.Level()
 }
 
 // Clock returns the clock of this logger.

@@ -121,6 +121,9 @@ func (l *NamedLogger) Fatalf(format string, v ...interface{}) {
 
 // Level returns the current level of this logger.
 func (l *NamedLogger) Level() LogLevel {
+	l.lvlMux.Lock()
+	defer l.lvlMux.Unlock()
+
 	return l.lvl
 }
 
@@ -128,6 +131,7 @@ func (l *NamedLogger) Level() LogLevel {
 func (l *NamedLogger) SetLevel(lvl LogLevel) {
 	l.lvlMux.Lock()
 	defer l.lvlMux.Unlock()
+
 	l.lvl = lvl
 }
 
@@ -139,7 +143,7 @@ func (s *NamedLogger) SetLevelString(level string) {
 // messages with the given log level.
 // False otherwise.
 func (l *NamedLogger) IsLevelEnabled(lvl LogLevel) bool {
-	return lvl >= l.lvl
+	return lvl >= l.Level()
 }
 
 // Clock returns the clock of this logger.
