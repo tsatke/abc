@@ -1,6 +1,6 @@
 package main
 
-import "gitlab.com/TimSatke/abc"
+import "github.com/TimSatke/abc"
 
 func main() {
 	logger := abc.NewSimpleLogger()

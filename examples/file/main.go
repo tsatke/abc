@@ -4,7 +4,7 @@ import (
 	"io"
 	"os"
 
-	"gitlab.com/TimSatke/abc"
+	"github.com/TimSatke/abc"
 )
 
 func main() {

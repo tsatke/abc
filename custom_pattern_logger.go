@@ -53,7 +53,7 @@ const (
 //	{{.Function}} or {{.Functionf "package"}} // one of "short", "package", "full" (anything different will be interpreted as "full")
 // Functionf "short" prints only the function name, while Functionf "package"
 // will print <package>.<function>.
-// Functionf "full" will print <full_package>.<function>, e.g. "gitlab.com/TimSatke/abc.main".
+// Functionf "full" will print <full_package>.<function>, e.g. "github.com/TimSatke/abc.main".
 //
 // Example:
 //
