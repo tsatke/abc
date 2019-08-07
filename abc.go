@@ -131,9 +131,9 @@ func NewColoredLogger(wrapped WriterLogger) WriterLogger {
 	}
 }
 
-// Must panics, if the given error is not nil.
+// panics, if the given error is not nil.
 // It returns the unmodified given logger otherwise.
-func Must(logger Logger, err error) Logger {
+func must(logger Logger, err error) Logger {
 	if err != nil {
 		panic(fmt.Errorf("must: %v", err))
 	}
