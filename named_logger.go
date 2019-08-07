@@ -20,7 +20,7 @@ type NamedLogger struct {
 	lvl    LogLevel
 
 	clockMux sync.Mutex
-	clock    Clock
+	clock    clockT
 
 	outMux sync.Mutex
 	out    io.Writer
@@ -147,12 +147,12 @@ func (l *NamedLogger) IsLevelEnabled(lvl LogLevel) bool {
 }
 
 // Clock returns the clock of this logger.
-func (l *NamedLogger) Clock() Clock {
+func (l *NamedLogger) Clock() clockT {
 	return l.clock
 }
 
 // SetClock sets a new clock for this logger.
-func (l *NamedLogger) SetClock(clock Clock) {
+func (l *NamedLogger) SetClock(clock clockT) {
 	l.clockMux.Lock()
 	defer l.clockMux.Unlock()
 	l.clock = clock

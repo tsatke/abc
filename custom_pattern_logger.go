@@ -68,7 +68,7 @@ type CustomPatternLogger struct {
 	lvl    LogLevel
 
 	clockMux sync.Mutex
-	clock    Clock
+	clock    clockT
 
 	outMux sync.Mutex
 	out    io.Writer
@@ -235,12 +235,12 @@ func (l *CustomPatternLogger) IsLevelEnabled(lvl LogLevel) bool {
 }
 
 // Clock returns the clock of this logger.
-func (l *CustomPatternLogger) Clock() Clock {
+func (l *CustomPatternLogger) Clock() clockT {
 	return l.clock
 }
 
 // SetClock sets a new clock for this logger.
-func (l *CustomPatternLogger) SetClock(clock Clock) {
+func (l *CustomPatternLogger) SetClock(clock clockT) {
 	l.clockMux.Lock()
 	defer l.clockMux.Unlock()
 	l.clock = clock
@@ -261,7 +261,7 @@ func (l *CustomPatternLogger) SetOut(out io.Writer) {
 // =======================================================
 
 type customPatternLoggerTemplateData struct {
-	clock   Clock
+	clock   clockT
 	Level   string
 	Message string
 

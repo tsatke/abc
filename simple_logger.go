@@ -19,7 +19,7 @@ type SimpleLogger struct {
 	lvl    LogLevel
 
 	clockMux sync.Mutex
-	clock    Clock
+	clock    clockT
 
 	outMux sync.Mutex
 	out    io.Writer
@@ -142,12 +142,12 @@ func (s *SimpleLogger) IsLevelEnabled(lvl LogLevel) bool {
 }
 
 // Clock returns the clock of this logger.
-func (s *SimpleLogger) Clock() Clock {
+func (s *SimpleLogger) Clock() clockT {
 	return s.clock
 }
 
 // SetClock sets a new clock for this logger.
-func (s *SimpleLogger) SetClock(clock Clock) {
+func (s *SimpleLogger) SetClock(clock clockT) {
 	s.clockMux.Lock()
 	defer s.clockMux.Unlock()
 	s.clock = clock
