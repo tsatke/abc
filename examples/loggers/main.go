@@ -6,7 +6,7 @@ func main() {
 	loggers := []abc.Logger{
 		abc.NewSimpleLogger(),
 		abc.NewNamedLogger("MyLogger"),
-		abc.must(abc.NewCustomPatternLogger(`{{.Timestamp}} {{.File}}:{{.Line}} {{.Function}} [{{.Level}}] - {{.Message}}` + "\n")),
+		abc.Must(abc.NewCustomPatternLogger(`{{.Timestamp}} {{.File}}:{{.Line}} {{.Function}} [{{.Level}}] - {{.Message}}` + "\n")),
 	}
 
 	for _, logger := range loggers {
