@@ -12,7 +12,7 @@ func TestCustomPatternLogger_Printf(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelDebug,
 		out:     buf,
 		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
@@ -82,7 +82,7 @@ func TestCustomPatternLogger_Print(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelDebug,
 		out:     buf,
 		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
@@ -188,7 +188,7 @@ func TestCustomPatternLogger_All_Outputs(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     buf,
 		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
@@ -250,7 +250,7 @@ func TestCustomPatternLogger_SetOut(t *testing.T) {
 	buf2 := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     buf1,
 		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
@@ -285,7 +285,7 @@ func TestCustomPatternLogger_SetLevel(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     buf,
 		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",

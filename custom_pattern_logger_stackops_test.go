@@ -13,7 +13,7 @@ func TestCustomPatternLogger_Stackops_File(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     buf,
 		pattern: `{{.File}} {{.Filef "short"}}`,
@@ -71,7 +71,7 @@ func TestCustomPatternLogger_Stackops_Function(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     buf,
 		pattern: `{{.Function}} {{.Functionf "short"}} {{.Functionf "full"}} {{.Functionf "package"}}`,

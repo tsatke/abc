@@ -29,7 +29,7 @@ func TestCustomPatternLogger_Stackops_Line(t *testing.T) {
 	}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     buf,
 		pattern: `{{.Line}}`,

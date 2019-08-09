@@ -24,9 +24,9 @@ func TestSetRoot(t *testing.T) {
 
 	// no output during tests
 	l := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelInfo,
-		out:   ioutil.Discard,
+		clk: &mockClock{},
+		lvl: LevelInfo,
+		out: ioutil.Discard,
 	}
 	SetRoot(l)
 
@@ -35,9 +35,9 @@ func TestSetRoot(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelInfo,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelInfo,
+		out: buf,
 	}
 	SetRoot(logger) // set new root logger
 
@@ -61,7 +61,7 @@ func TestNewSimpleLogger(t *testing.T) {
 	// check default out
 	assert.Equal(logger.out, os.Stdout)
 	// check default clock type (must be real clock)
-	_, ok = logger.clock.(*realClock)
+	_, ok = logger.clk.(*realClock)
 	assert.True(ok, "Clock was expected to be of type *realClock, but was not.")
 }
 
@@ -81,7 +81,7 @@ func TestNewNamedLogger(t *testing.T) {
 	// check default out
 	assert.Equal(logger.out, os.Stdout)
 	// check default clock type (must be real clock)
-	_, ok = logger.clock.(*realClock)
+	_, ok = logger.clk.(*realClock)
 	assert.True(ok, "Clock was expected to be of type *realClock, but was not.")
 	// check name
 	assert.Equalf(logger.name, name, "Expected name of logger to be '%v', but was '%v'.", name, logger.name)
@@ -104,7 +104,7 @@ func TestNewCustomPatternLogger(t *testing.T) {
 	// check default out
 	assert.Equal(logger.out, os.Stdout)
 	// check default clock type (must be real clock)
-	_, ok = logger.clock.(*realClock)
+	_, ok = logger.clk.(*realClock)
 	assert.True(ok, "Clock was expected to be of type *realClock, but was not.")
 	// check pattern
 	assert.Equalf(logger.pattern, pattern, "Expected pattern of logger to be '%v', but was '%v'.", pattern, logger.pattern)
@@ -146,9 +146,9 @@ func Test_All_Outputs(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelVerbose,
+		out: buf,
 	}
 	SetRoot(logger)
 
@@ -218,9 +218,9 @@ func TestSetLevel(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelInfo,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelInfo,
+		out: buf,
 	}
 	SetRoot(logger) // set new root logger
 

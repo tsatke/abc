@@ -13,9 +13,9 @@ func TestColoredLogger_Printf(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	l := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelDebug,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelDebug,
+		out: buf,
 	}
 
 	logger := &ColoredLogger{
@@ -110,9 +110,9 @@ func TestColoredLogger_Print(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	l := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelDebug,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelDebug,
+		out: buf,
 	}
 
 	logger := &ColoredLogger{
@@ -216,9 +216,9 @@ func TestColoredLogger_All_Outputs(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	l := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelVerbose,
+		out: buf,
 	}
 
 	logger := &ColoredLogger{
@@ -273,9 +273,9 @@ func TestColoredLogger_SetOut(t *testing.T) {
 	buf2 := &bytes.Buffer{}
 
 	l := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf1,
+		clk: &mockClock{},
+		lvl: LevelVerbose,
+		out: buf1,
 	}
 
 	logger := &ColoredLogger{
@@ -313,9 +313,9 @@ func TestColoredLogger_SetLevel(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	l := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelVerbose,
+		out: buf,
 	}
 
 	logger := &ColoredLogger{

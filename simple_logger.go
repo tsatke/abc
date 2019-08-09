@@ -19,7 +19,7 @@ type SimpleLogger struct {
 	lvl    LogLevel
 
 	clockMux sync.Mutex
-	clock    Clock
+	clk      clock
 
 	outMux sync.Mutex
 	out    io.Writer
@@ -44,7 +44,7 @@ func (s *SimpleLogger) Printf(lvl LogLevel, format string, v ...interface{}) {
 }
 
 func (s *SimpleLogger) prepareMessage(lvl LogLevel, a string) string {
-	return fmt.Sprintf("%v [%-4v] - %v\n", s.clock.Now().Format(TimeLayoutSimpleLogger), lvl.String(), a)
+	return fmt.Sprintf("%v [%-4v] - %v\n", s.clk.Now().Format(TimeLayoutSimpleLogger), lvl.String(), a)
 }
 
 func (s *SimpleLogger) print0(a string) {
@@ -141,16 +141,16 @@ func (s *SimpleLogger) IsLevelEnabled(lvl LogLevel) bool {
 	return lvl >= s.Level()
 }
 
-// Clock returns the clock of this logger.
-func (s *SimpleLogger) Clock() Clock {
-	return s.clock
+// clock returns the clock of this logger.
+func (s *SimpleLogger) clock() clock {
+	return s.clk
 }
 
 // SetClock sets a new clock for this logger.
-func (s *SimpleLogger) SetClock(clock Clock) {
+func (s *SimpleLogger) SetClock(clk clock) {
 	s.clockMux.Lock()
 	defer s.clockMux.Unlock()
-	s.clock = clock
+	s.clk = clk
 }
 
 // Out returns the writer of this logger.

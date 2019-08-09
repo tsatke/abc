@@ -6,7 +6,7 @@ import (
 
 func BenchmarkCustomPatternLogger_Printf(b *testing.B) {
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     &MockWriter{},
 		pattern: "{{.Timestamp}} [{{.Level}}] - {{.Message}}\n",
@@ -21,7 +21,7 @@ func BenchmarkCustomPatternLogger_Printf(b *testing.B) {
 }
 func BenchmarkCustomPatternLogger_Printf_Stack_Ops(b *testing.B) {
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     &MockWriter{},
 		pattern: "{{.Timestamp}} {{.File}}:{{.Line}} {{.Function}} [{{.Level}}] - {{.Message}}\n",

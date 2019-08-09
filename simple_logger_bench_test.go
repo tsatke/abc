@@ -6,9 +6,9 @@ import (
 
 func BenchmarkSimpleLogger_Printf(b *testing.B) {
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   &MockWriter{},
+		clk: &mockClock{},
+		lvl: LevelVerbose,
+		out: &MockWriter{},
 	}
 	b.ReportAllocs()
 	b.ResetTimer()
