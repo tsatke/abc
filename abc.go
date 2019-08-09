@@ -40,9 +40,9 @@ func SetRoot(lg Logger) {
 //	logger.SetOut(os.Stdout)
 func NewSimpleLogger() WriterLogger {
 	return &SimpleLogger{
-		lvl:   LevelInfo,
-		clock: &realClock{},
-		out:   os.Stdout,
+		lvl: LevelInfo,
+		clk: &realClock{},
+		out: os.Stdout,
 	}
 }
 
@@ -58,10 +58,10 @@ func NewSimpleLogger() WriterLogger {
 //	logger.SetOut(os.Stdout)
 func NewNamedLogger(name string) WriterLogger {
 	return &NamedLogger{
-		lvl:   LevelInfo,
-		clock: &realClock{},
-		out:   os.Stdout,
-		name:  name,
+		lvl:  LevelInfo,
+		clk:  &realClock{},
+		out:  os.Stdout,
+		name: name,
 	}
 }
 
@@ -110,7 +110,7 @@ func NewNamedLogger(name string) WriterLogger {
 func NewCustomPatternLogger(pattern string) (WriterLogger, error) {
 	logger := &CustomPatternLogger{
 		lvl:     LevelInfo,
-		clock:   &realClock{},
+		clk:     &realClock{},
 		out:     os.Stdout,
 		pattern: pattern,
 	}
