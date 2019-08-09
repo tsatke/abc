@@ -20,7 +20,7 @@ type NamedLogger struct {
 	lvl    LogLevel
 
 	clockMux sync.Mutex
-	clock    Clock
+	clk      clock
 
 	outMux sync.Mutex
 	out    io.Writer
@@ -48,7 +48,7 @@ func (l *NamedLogger) Printf(lvl LogLevel, format string, v ...interface{}) {
 }
 
 func (l *NamedLogger) prepareMessage(lvl LogLevel, a string) string {
-	return fmt.Sprintf("%v <%-v> [%-4v] - %v\n", l.clock.Now().Format(TimeLayoutNamedLogger), l.name, lvl.String(), a)
+	return fmt.Sprintf("%v <%-v> [%-4v] - %v\n", l.clk.Now().Format(TimeLayoutNamedLogger), l.name, lvl.String(), a)
 }
 
 func (l *NamedLogger) print0(a string) {
@@ -121,6 +121,9 @@ func (l *NamedLogger) Fatalf(format string, v ...interface{}) {
 
 // Level returns the current level of this logger.
 func (l *NamedLogger) Level() LogLevel {
+	l.lvlMux.Lock()
+	defer l.lvlMux.Unlock()
+
 	return l.lvl
 }
 
@@ -128,26 +131,31 @@ func (l *NamedLogger) Level() LogLevel {
 func (l *NamedLogger) SetLevel(lvl LogLevel) {
 	l.lvlMux.Lock()
 	defer l.lvlMux.Unlock()
+
 	l.lvl = lvl
+}
+
+func (s *NamedLogger) SetLevelString(level string) {
+	s.SetLevel(ToLogLevel(level))
 }
 
 // IsLevelEnabled returns true if and only if this logger would print
 // messages with the given log level.
 // False otherwise.
 func (l *NamedLogger) IsLevelEnabled(lvl LogLevel) bool {
-	return lvl >= l.lvl
+	return lvl >= l.Level()
 }
 
-// Clock returns the clock of this logger.
-func (l *NamedLogger) Clock() Clock {
-	return l.clock
+// clock returns the clock of this logger.
+func (l *NamedLogger) clock() clock {
+	return l.clk
 }
 
 // SetClock sets a new clock for this logger.
-func (l *NamedLogger) SetClock(clock Clock) {
+func (l *NamedLogger) SetClock(clk clock) {
 	l.clockMux.Lock()
 	defer l.clockMux.Unlock()
-	l.clock = clock
+	l.clk = clk
 }
 
 // Out returns the writer of this logger.

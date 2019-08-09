@@ -12,10 +12,10 @@ func TestNamedLogger_Printf(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &NamedLogger{
-		clock: &mockClock{},
-		lvl:   LevelDebug,
-		out:   buf,
-		name:  "MyLogger",
+		clk:  &mockClock{},
+		lvl:  LevelDebug,
+		out:  buf,
+		name: "MyLogger",
 	}
 
 	type args struct {
@@ -82,10 +82,10 @@ func TestNamedLogger_Print(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &NamedLogger{
-		clock: &mockClock{},
-		lvl:   LevelDebug,
-		out:   buf,
-		name:  "MyLogger",
+		clk:  &mockClock{},
+		lvl:  LevelDebug,
+		out:  buf,
+		name: "MyLogger",
 	}
 
 	type args struct {
@@ -188,10 +188,10 @@ func TestNamedLogger_All_Outputs(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &NamedLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
-		name:  "MyLogger",
+		clk:  &mockClock{},
+		lvl:  LevelVerbose,
+		out:  buf,
+		name: "MyLogger",
 	}
 
 	check := func() {
@@ -250,10 +250,10 @@ func TestNamedLogger_SetOut(t *testing.T) {
 	buf2 := &bytes.Buffer{}
 
 	logger := &NamedLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf1,
-		name:  "MyLogger",
+		clk:  &mockClock{},
+		lvl:  LevelVerbose,
+		out:  buf1,
+		name: "MyLogger",
 	}
 
 	logger.Info("foo")
@@ -285,10 +285,10 @@ func TestNamedLogger_SetLevel(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &NamedLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
-		name:  "MyLogger",
+		clk:  &mockClock{},
+		lvl:  LevelVerbose,
+		out:  buf,
+		name: "MyLogger",
 	}
 
 	logger.Verbose("foo")

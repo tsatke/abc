@@ -53,7 +53,7 @@ const (
 //	{{.Function}} or {{.Functionf "package"}} // one of "short", "package", "full" (anything different will be interpreted as "full")
 // Functionf "short" prints only the function name, while Functionf "package"
 // will print <package>.<function>.
-// Functionf "full" will print <full_package>.<function>, e.g. "gitlab.com/TimSatke/abc.main".
+// Functionf "full" will print <full_package>.<function>, e.g. "github.com/TimSatke/abc.main".
 //
 // Example:
 //
@@ -68,7 +68,7 @@ type CustomPatternLogger struct {
 	lvl    LogLevel
 
 	clockMux sync.Mutex
-	clock    Clock
+	clk      clock
 
 	outMux sync.Mutex
 	out    io.Writer
@@ -115,7 +115,7 @@ func (l *CustomPatternLogger) prepareMessage(lvl LogLevel, a string) string {
 
 	buf := &bytes.Buffer{}
 	err := l.template.Execute(buf, &customPatternLoggerTemplateData{
-		clock:   l.clock,
+		clk:     l.clk,
 		Level:   fmt.Sprintf("%-4v", lvl.String()),
 		Message: a,
 	})
@@ -209,6 +209,9 @@ func (l *CustomPatternLogger) Fatalf(format string, v ...interface{}) {
 
 // Level returns the current level of this logger.
 func (l *CustomPatternLogger) Level() LogLevel {
+	l.lvlMux.Lock()
+	defer l.lvlMux.Unlock()
+
 	return l.lvl
 }
 
@@ -216,26 +219,31 @@ func (l *CustomPatternLogger) Level() LogLevel {
 func (l *CustomPatternLogger) SetLevel(lvl LogLevel) {
 	l.lvlMux.Lock()
 	defer l.lvlMux.Unlock()
+
 	l.lvl = lvl
+}
+
+func (s *CustomPatternLogger) SetLevelString(level string) {
+	s.SetLevel(ToLogLevel(level))
 }
 
 // IsLevelEnabled returns true if and only if this logger would print
 // messages with the given log level.
 // False otherwise.
 func (l *CustomPatternLogger) IsLevelEnabled(lvl LogLevel) bool {
-	return lvl >= l.lvl
+	return lvl >= l.Level()
 }
 
-// Clock returns the clock of this logger.
-func (l *CustomPatternLogger) Clock() Clock {
-	return l.clock
+// clock returns the clock of this logger.
+func (l *CustomPatternLogger) clock() clock {
+	return l.clk
 }
 
 // SetClock sets a new clock for this logger.
-func (l *CustomPatternLogger) SetClock(clock Clock) {
+func (l *CustomPatternLogger) SetClock(clk clock) {
 	l.clockMux.Lock()
 	defer l.clockMux.Unlock()
-	l.clock = clock
+	l.clk = clk
 }
 
 // Out returns the writer of this logger.
@@ -253,7 +261,7 @@ func (l *CustomPatternLogger) SetOut(out io.Writer) {
 // =======================================================
 
 type customPatternLoggerTemplateData struct {
-	clock   Clock
+	clk     clock
 	Level   string
 	Message string
 
@@ -270,7 +278,7 @@ func (l *customPatternLoggerTemplateData) Timestamp() string {
 }
 
 func (l *customPatternLoggerTemplateData) Timestampf(layout string) string {
-	return l.clock.Now().Format(layout) // the formatted timestamp
+	return l.clk.Now().Format(layout) // the formatted timestamp
 }
 
 func (l *customPatternLoggerTemplateData) File() string {

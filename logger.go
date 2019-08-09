@@ -49,6 +49,11 @@ type Logger interface {
 
 	// SetLevel changes the log level of this logger.
 	SetLevel(LogLevel)
+	// SetLevelString changes to log level of this logger.
+	// The string is case-insensitive and can be one of
+	//
+	//	[verbose,debug,info,warn,error,fatal]
+	SetLevelString(string)
 	// IsLevelEnabled returns true if and only if this logger would print
 	// messages with the given log level.
 	// False otherwise.

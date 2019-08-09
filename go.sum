@@ -6,3 +6,5 @@ github.com/sergi/go-diff v1.0.0 h1:Kpca3qRNrduNnOQeazBd0ysaKrUJiIuISHxogkT9RPQ=
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
+gitlab.com/TimSatke/abc v0.0.0-20190410092415-79a9c3751cfb h1:qglQ6bJ6SY+dyLRKLkXveBCYXXnyMW39OZDCYDDK+DA=
+gitlab.com/TimSatke/abc v0.0.0-20190410092415-79a9c3751cfb/go.mod h1:UpvDUpDROIyyvneNNwAKbpG4vHoIO6xXBM8KiUqiv2A=

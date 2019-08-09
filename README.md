@@ -1,10 +1,13 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/TimSatke/abc)](https://goreportcard.com/report/github.com/TimSatke/abc)
+[![GoDoc](https://godoc.org/github.com/TimSatke/abc?status.svg)](https://godoc.org/github.com/TimSatke/abc)
+
 # abc
 
 A Golang logging library.
 
 ## Installation
 ```
-go get -u gitlab.com/TimSatke/abc
+go get -u github.com/TimSatke/abc
 ```
 
 ## Example
@@ -29,7 +32,7 @@ logger.Debugf("Hello %v!", "World") // 2018-11-24 20:10:55.300 <MyLogger> [DEBG]
 $ go test -count 5 -bench . -benchmem
 goos: windows
 goarch: amd64
-pkg: gitlab.com/TimSatke/abc
+pkg: github.com/TimSatke/abc
 BenchmarkColoredLogger_SimpleLogger_Printf-8             1000000              1064 ns/op             320 B/op          9 allocs/op
 BenchmarkColoredLogger_SimpleLogger_Printf-8             1000000              1055 ns/op             320 B/op          9 allocs/op
 BenchmarkColoredLogger_SimpleLogger_Printf-8             1000000              1058 ns/op             320 B/op          9 allocs/op
@@ -66,5 +69,5 @@ BenchmarkStdLogger_Stackops-8                            1000000              11
 BenchmarkStdLogger_Stackops-8                            1000000              1189 ns/op             176 B/op          2 allocs/op
 BenchmarkStdLogger_Stackops-8                            1000000              1213 ns/op             176 B/op          2 allocs/op
 PASS
-ok      gitlab.com/TimSatke/abc 59.162s
+ok      github.com/TimSatke/abc 59.162s
 ```

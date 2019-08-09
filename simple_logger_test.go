@@ -12,9 +12,9 @@ func TestSimpleLogger_Printf(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelDebug,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelDebug,
+		out: buf,
 	}
 
 	type args struct {
@@ -81,9 +81,9 @@ func TestSimpleLogger_Print(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelDebug,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelDebug,
+		out: buf,
 	}
 
 	type args struct {
@@ -186,9 +186,9 @@ func TestSimpleLogger_All_Outputs(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelVerbose,
+		out: buf,
 	}
 
 	check := func() {
@@ -247,9 +247,9 @@ func TestSimpleLogger_SetOut(t *testing.T) {
 	buf2 := &bytes.Buffer{}
 
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf1,
+		clk: &mockClock{},
+		lvl: LevelVerbose,
+		out: buf1,
 	}
 
 	logger.Info("foo")
@@ -281,9 +281,9 @@ func TestSimpleLogger_SetLevel(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &SimpleLogger{
-		clock: &mockClock{},
-		lvl:   LevelVerbose,
-		out:   buf,
+		clk: &mockClock{},
+		lvl: LevelVerbose,
+		out: buf,
 	}
 
 	logger.Verbose("foo")

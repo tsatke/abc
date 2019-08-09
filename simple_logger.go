@@ -19,7 +19,7 @@ type SimpleLogger struct {
 	lvl    LogLevel
 
 	clockMux sync.Mutex
-	clock    Clock
+	clk      clock
 
 	outMux sync.Mutex
 	out    io.Writer
@@ -44,7 +44,7 @@ func (s *SimpleLogger) Printf(lvl LogLevel, format string, v ...interface{}) {
 }
 
 func (s *SimpleLogger) prepareMessage(lvl LogLevel, a string) string {
-	return fmt.Sprintf("%v [%-4v] - %v\n", s.clock.Now().Format(TimeLayoutSimpleLogger), lvl.String(), a)
+	return fmt.Sprintf("%v [%-4v] - %v\n", s.clk.Now().Format(TimeLayoutSimpleLogger), lvl.String(), a)
 }
 
 func (s *SimpleLogger) print0(a string) {
@@ -117,6 +117,9 @@ func (s *SimpleLogger) Fatalf(format string, v ...interface{}) {
 
 // Level returns the current level of this logger.
 func (s *SimpleLogger) Level() LogLevel {
+	s.lvlMux.Lock()
+	defer s.lvlMux.Unlock()
+
 	return s.lvl
 }
 
@@ -127,23 +130,27 @@ func (s *SimpleLogger) SetLevel(lvl LogLevel) {
 	s.lvl = lvl
 }
 
+func (s *SimpleLogger) SetLevelString(level string) {
+	s.SetLevel(ToLogLevel(level))
+}
+
 // IsLevelEnabled returns true if and only if this logger would print
 // messages with the given log level.
 // False otherwise.
 func (s *SimpleLogger) IsLevelEnabled(lvl LogLevel) bool {
-	return lvl >= s.lvl
+	return lvl >= s.Level()
 }
 
-// Clock returns the clock of this logger.
-func (s *SimpleLogger) Clock() Clock {
-	return s.clock
+// clock returns the clock of this logger.
+func (s *SimpleLogger) clock() clock {
+	return s.clk
 }
 
 // SetClock sets a new clock for this logger.
-func (s *SimpleLogger) SetClock(clock Clock) {
+func (s *SimpleLogger) SetClock(clk clock) {
 	s.clockMux.Lock()
 	defer s.clockMux.Unlock()
-	s.clock = clock
+	s.clk = clk
 }
 
 // Out returns the writer of this logger.

@@ -40,9 +40,9 @@ func SetRoot(lg Logger) {
 //	logger.SetOut(os.Stdout)
 func NewSimpleLogger() WriterLogger {
 	return &SimpleLogger{
-		lvl:   LevelInfo,
-		clock: &realClock{},
-		out:   os.Stdout,
+		lvl: LevelInfo,
+		clk: &realClock{},
+		out: os.Stdout,
 	}
 }
 
@@ -58,10 +58,10 @@ func NewSimpleLogger() WriterLogger {
 //	logger.SetOut(os.Stdout)
 func NewNamedLogger(name string) WriterLogger {
 	return &NamedLogger{
-		lvl:   LevelInfo,
-		clock: &realClock{},
-		out:   os.Stdout,
-		name:  name,
+		lvl:  LevelInfo,
+		clk:  &realClock{},
+		out:  os.Stdout,
+		name: name,
 	}
 }
 
@@ -97,7 +97,7 @@ func NewNamedLogger(name string) WriterLogger {
 //	{{.Function}} or {{.Functionf "package"}} // one of "short", "package", "full" (anything different will be interpreted as "full")
 // Functionf "short" prints only the function name, while Functionf "package"
 // will print <package>.<function>.
-// Functionf "full" will print <full_package>.<function>, e.g. "gitlab.com/TimSatke/abc.main".
+// Functionf "full" will print <full_package>.<function>, e.g. "github.com/TimSatke/abc.main".
 //
 // Example:
 //
@@ -110,7 +110,7 @@ func NewNamedLogger(name string) WriterLogger {
 func NewCustomPatternLogger(pattern string) (WriterLogger, error) {
 	logger := &CustomPatternLogger{
 		lvl:     LevelInfo,
-		clock:   &realClock{},
+		clk:     &realClock{},
 		out:     os.Stdout,
 		pattern: pattern,
 	}

@@ -13,7 +13,7 @@ func TestCustomPatternLogger_Stackops_File(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     buf,
 		pattern: `{{.File}} {{.Filef "short"}}`,
@@ -66,12 +66,12 @@ func TestCustomPatternLogger_Stackops_File(t *testing.T) {
 }
 
 func TestCustomPatternLogger_Stackops_Function(t *testing.T) {
-	expectation := "abc.TestCustomPatternLogger_Stackops_Function TestCustomPatternLogger_Stackops_Function gitlab.com/TimSatke/abc.TestCustomPatternLogger_Stackops_Function abc.TestCustomPatternLogger_Stackops_Function"
+	expectation := "abc.TestCustomPatternLogger_Stackops_Function TestCustomPatternLogger_Stackops_Function github.com/TimSatke/abc.TestCustomPatternLogger_Stackops_Function abc.TestCustomPatternLogger_Stackops_Function"
 
 	buf := &bytes.Buffer{}
 
 	logger := &CustomPatternLogger{
-		clock:   &mockClock{},
+		clk:     &mockClock{},
 		lvl:     LevelVerbose,
 		out:     buf,
 		pattern: `{{.Function}} {{.Functionf "short"}} {{.Functionf "full"}} {{.Functionf "package"}}`,

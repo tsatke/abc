@@ -1,6 +1,6 @@
 package main
 
-import "gitlab.com/TimSatke/abc"
+import "github.com/TimSatke/abc"
 
 func main() {
 	logger := abc.NewSimpleLogger()
@@ -18,5 +18,5 @@ func main() {
 	logger.Error("Still printing...")
 
 	abc.SetRoot(logger)
-	abc.Info("Now you can use me globally")
+	abc.Warn("Now you can use me globally")
 }
